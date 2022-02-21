@@ -99,7 +99,7 @@ public class Game {
             grid.updateAfterMove(row, column, x, y);
             return true;
         } else {
-            System.err.println("Target Filed[" + x + "][" + y + "] is not movable.");
+            System.err.println("Target field[" + x + "][" + y + "] is not movable.");
             return false;
         }
     }
@@ -127,17 +127,9 @@ public class Game {
             grid.buildTowerLevel(x, y);
             return true;
         } else {
-            System.err.println("Target Filed[" + x + "][" + y + "] is not buildable.");
+            System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
             return false;
         }
-    }
-
-    public Player getCurrentPlayer() {
-        return currentPlayer;
-    }
-
-    public Grid getGrid() {
-        return grid;
     }
 
     /**
@@ -169,5 +161,9 @@ public class Game {
             }
         }
         return false;
+    }
+
+    public Grid getGrid() {
+        return grid;
     }
 }
