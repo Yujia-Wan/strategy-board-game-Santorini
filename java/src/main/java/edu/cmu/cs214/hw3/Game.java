@@ -164,7 +164,7 @@ public class Game {
         for (Worker worker : workers) {
             if (worker.getHeight() == WIN_HEIGHT) {
                 winner = currentPlayer;
-                System.out.println("Player " + playerId + " wins!");
+                System.out.println("Player " + winner.getPlayerId() + " wins!");
                 return true;
             }
         }
