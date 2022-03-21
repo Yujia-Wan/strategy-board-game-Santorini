@@ -17,22 +17,6 @@ public class Demeter extends GodCard {
         firstBuildY = -1;
     }
 
-    @Override
-    public void nextAction() {
-        if (this.action.equals(MOVE)) {
-            this.action = BUILD;
-            this.myTurn = true;
-        } else if (this.action.equals(BUILD)) {
-            this.action = SECOND_BUILD;
-            this.myTurn = true;
-        } else if (this.action.equals(SECOND_BUILD)) {
-            this.action = MOVE;
-            firstBuildX = -1;
-            firstBuildY = -1;
-            this.myTurn = false;
-        }
-    }
-
     public boolean secondBuild(Player player, Worker worker, int x, int y,
                                int firstBuildX, int firstBuildY) {
         Worker buildWorker = player.getWorker(worker.getWorkerId());
@@ -52,6 +36,22 @@ public class Demeter extends GodCard {
     }
 
     @Override
+    public void nextAction() {
+        if (this.action.equals(MOVE)) {
+            this.action = BUILD;
+            this.myTurn = true;
+        } else if (this.action.equals(BUILD)) {
+            this.action = SECOND_BUILD;
+            this.myTurn = true;
+        } else if (this.action.equals(SECOND_BUILD)) {
+            this.action = MOVE;
+            firstBuildX = -1;
+            firstBuildY = -1;
+            this.myTurn = false;
+        }
+    }
+
+    @Override
     public boolean execute(Worker worker, int x, int y) {
         if (this.action.equals(MOVE)) {
             if (this.player.hasMovablePositions()) {
@@ -60,7 +60,7 @@ public class Demeter extends GodCard {
                 return false;
             }
 
-            if (!this.player.move(worker, x, y)) {
+            if (!this.move(worker, x, y)) {
                 return false;
             }
 
@@ -77,7 +77,7 @@ public class Demeter extends GodCard {
             }
 
             if (this.action.equals(BUILD)) {
-                if (!this.player.build(worker, x, y)) {
+                if (!this.build(worker, x, y)) {
                     return false;
                 }
                 this.firstBuildX = x;
@@ -90,7 +90,6 @@ public class Demeter extends GodCard {
                 }
             }
         }
-
         checkWin();
         nextAction();
         return true;

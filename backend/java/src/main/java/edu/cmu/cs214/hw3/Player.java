@@ -113,55 +113,8 @@ public class Player {
         return true;
     }
 
-    /**
-     * Player moves the selected worker to an adjacent unoccupied field.
-     *
-     * @param worker
-     * @param x
-     * @param y
-     * @return {@code true} if worker moves successfully.
-     */
-    public boolean move(Worker worker, int x, int y) {
-        Worker moveWorker = this.getWorker(worker.getWorkerId());
-        int prevX = moveWorker.getX();
-        int prevY = moveWorker.getY();
-        Set<Point> movablePos = this.grid.movablePositions(prevX, prevY);
-        Point target = new Point(x, y);
-        if (movablePos.contains(target)) {
-            moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
-            this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
-            return true;
-        }
-        return false;
-    }
-
-
     public boolean hasBuildablePositions(Worker worker) {
         return !this.grid.buildablePositions(worker.getX(), worker.getY()).isEmpty();
-    }
-
-    /**
-     * Player adds a block or dome to an unoccupied adjacent field of worker's
-     * new position.
-     *
-     * @param worker
-     * @param x
-     * @param y
-     * @return {@code true} if worker builds tower successfully.
-     */
-    public boolean build(Worker worker, int x, int y) {
-        Worker buildWorker = this.getWorker(worker.getWorkerId());
-        int workerX = buildWorker.getX();
-        int workerY = buildWorker.getY();
-        Set<Point> buildablePos = this.grid.buildablePositions(workerX, workerY);
-        Point target = new Point(x, y);
-        if (buildablePos.contains(target)) {
-            this.grid.buildTowerLevel(x, y);
-            return true;
-        }
-
-        System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
-        return false;
     }
 
 
