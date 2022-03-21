@@ -1,134 +1,85 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 public class Game {
     private static final int WIN_HEIGHT = 3;
-    private Player playerA;
-    private Player playerB;
-    private Grid grid;
-    private Player currentPlayer;
+    private static final String[] GOD_CARDS = {"NonGod: Play game without god cards.",
+            "Demeter: Your worker may build one additional time, but not on the same space.",
+            "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " +
+                    "be forced one space straight backwards to an unoccupied space at any level.",
+            "Pan: You also win if your Worker moves down two or more levels."};
+    private static final int NON_GOD = 0;
+    private static final int DEMETER = 1;
+    private static final int MINOTAUR = 2;
+    private static final int PAN = 3;
+    private final Grid grid;
+    private final Player playerA;
+    private final Player playerB;
     private Player winner;
+    private Player currPlayer;
+    private Worker currWorker;
+    private List<Integer> chosenGodCards;
+    private Map<Player, GodCard> playerCardMap;
+
+    public Game() {
+        this(new Grid());
+    }
+
+    public Game(Grid grid) {
+        this(grid, new Player("A", grid), new Player("B", grid));
+    }
 
     /**
      * Creates a new {@link Game} instance.
      *
-     * @param playerAId ID of the first player.
-     * @param playerBId ID of the second player.
+     * @param playerA ID of the first player.
+     * @param playerB ID of the second player.
      */
-    public Game(String playerAId, String playerBId) {
-        this.playerA = new Player(playerAId);
-        this.playerB = new Player(playerBId);
-        this.grid = new Grid();
-        // Assume Player A always starts first
-        currentPlayer = playerA;
-        winner = null;
+    public Game(Grid grid, Player playerA, Player playerB) {
+        this.grid = grid;
+        this.playerA = playerA;
+        this.playerB = playerB;
+        this.winner = null;
+        this.currPlayer = playerA;
+        this.currWorker = null;
+        this.chosenGodCards = new ArrayList<>();
+        this.playerCardMap = new HashMap<>();
     }
 
-    /**
-     * Initializes the game. Both players pick starting positions for both
-     * their workers on the grid.
-     *
-     * @param playerId Player's ID.
-     * @param workerId Worker's ID
-     * @param x X coordinate of worker's starting position.
-     * @param y Y coordinate of worker's starting position.
-     */
-    public void initGame(String playerId, String workerId, int x, int y) {
-        if (this.playerA.getPlayerId().equals(playerId)) {
-            this.playerA.initWorkerPosition(workerId, x, y);
-            grid.updateAfterInit(x, y);
-        } else if (this.playerB.getPlayerId().equals(playerId)) {
-            this.playerB.initWorkerPosition(workerId, x, y);
-            grid.updateAfterInit(x, y);
-        } else {
-            System.err.println("No player for this ID: " + playerId);
+    public Grid getGrid() {
+        return grid;
+    }
+
+    public Player getCurrPlayer() {
+        return this.currPlayer;
+    }
+
+    public Worker getCurrWorker() {
+        return this.currWorker;
+    }
+
+
+    private boolean allWorkersInited() {
+        return this.playerA.allWorkersInited() && this.playerB.allWorkersInited();
+    }
+
+    private void initWorkerPosition(int workerId, int x, int y) {
+        if (this.currPlayer.getWorker(workerId).hasInitPosition()) {
+            return;
         }
-    }
 
-    /**
-     * Each player takes turns to play the game.
-     *
-     * @param workerId Worker's ID.
-     * @param x X coordinate of target position.
-     * @param y Y coordinate of target position.
-     */
-    public void playGame(String workerId, int x, int y) {
-        while (true) {
-            boolean moveSuccess = false;
-            do {
-                moveSuccess = this.move(currentPlayer.getPlayerId(), workerId, x, y);
-            } while (!moveSuccess);
+        this.currPlayer.initWorkerPosition(workerId, x, y);
 
-            if (this.checkWin(currentPlayer.getPlayerId())) {
-                break;
+        if (this.currPlayer.allWorkersInited()) {
+            if (this.currPlayer == this.playerA) {
+                this.currPlayer = this.playerB;
+            } else if (this.currPlayer == this.playerB) {
+                this.currPlayer = this.playerA;
             }
-
-            boolean buildSuccess = false;
-            do {
-                buildSuccess = this.build(currentPlayer.getPlayerId(), workerId, x, y);
-            } while (!buildSuccess);
-
-            newTurn();
-        }
-    }
-
-    /**
-     * Player moves the selected worker to an adjacent unoccupied field.
-     *
-     * @param playerId Player's ID.
-     * @param workerId Worker's ID.
-     * @param x X coordinate of target position.
-     * @param y X coordinate of target position.
-     * @return {@code true} if worker moves successfully.
-     */
-    public boolean move(String playerId, String workerId, int x, int y) {
-        assert this.currentPlayer.getPlayerId().equals(playerId);
-
-        Worker worker = this.currentPlayer.getWorker(workerId);
-        int row = worker.getRowIndex();
-        int column = worker.getColumnIndex();
-        Set<Point> movable = grid.movablePositions(worker, row, column);
-        Point targetPosition = new Point(x, y);
-
-        if (movable.contains(targetPosition)) {
-            worker.setPosition(x, y);
-            worker.setHeight(grid.getFieldHeight(x, y));
-            grid.updateAfterMove(row, column, x, y);
-            return true;
-        } else {
-            System.err.println("Target field[" + x + "][" + y + "] is not movable.");
-            return false;
-        }
-    }
-
-    /**
-     * Player adds a block or dome to an unoccupied adjacent field of worker's
-     * new position.
-     *
-     * @param playerId Player's ID.
-     * @param workerId Worker's ID.
-     * @param x X coordinate of target position.
-     * @param y Y coordinate of target position.
-     * @return {@code true} if worker builds tower successfully.
-     */
-    public boolean build(String playerId, String workerId, int x, int y) {
-        assert this.currentPlayer.getPlayerId().equals(playerId);
-
-        Worker worker = this.currentPlayer.getWorker(workerId);
-        int row = worker.getRowIndex();
-        int column = worker.getColumnIndex();
-        Set<Point> buildable = grid.buildablePositions(row, column);
-        Point targetPosition = new Point(x, y);
-
-        if (buildable.contains(targetPosition)) {
-            grid.buildTowerLevel(x, y);
-            return true;
-        } else {
-            System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
-            return false;
         }
     }
 
@@ -136,34 +87,123 @@ public class Game {
      * Changes turn to another player.
      */
     public void newTurn() {
-        if (currentPlayer == playerA) {
-            currentPlayer = playerB;
-        } else {
-            currentPlayer = playerA;
+        if (this.currPlayer == this.playerA && !this.playerA.getGodCard().isMyTurn()) {
+            this.currPlayer = this.playerB;
+        } else if (this.currPlayer == this.playerB && !this.playerB.getGodCard().isMyTurn()) {
+            this.currPlayer = this.playerA;
         }
+    }
+
+    /**
+     * Each player takes turns to play the game.
+     *
+     * @param x X coordinate of target position.
+     * @param y Y coordinate of target position.
+     */
+    public Game play(int x, int y) {
+        if (!this.allWorkersInited()) {
+            initWorkerPosition(this.currWorker.getWorkerId(), x, y);
+            return this;
+        }
+
+        if (!this.currPlayer.getGodCard().execute(this.currWorker, x, y)) {
+            return this;
+        }
+
+        newTurn();
+        return this;
+    }
+
+
+    private void updatePlayerForChooseCard() {
+        if (this.currPlayer == this.playerA) {
+            this.currPlayer = playerB;
+        } else if (this.currPlayer == this.playerB) {
+            this.currPlayer = playerA;
+        }
+    }
+
+    private GodCard createGodCard(Player player, int x) {
+        GodCard card;
+        switch (x) {
+            case NON_GOD:
+                card = new NonGodCard(this.grid, player);
+                break;
+            case DEMETER:
+                card = new Demeter(this.grid, player);
+                break;
+            case MINOTAUR:
+                card = new Minotaur(this.grid, player);
+                break;
+            case PAN:
+                card = new Pan(this.grid, player);
+                break;
+            default:
+                card = null;
+                System.out.println("No this god card.");
+        }
+        player.addGodCard(card);
+        this.playerCardMap.put(player, card);
+        return card;
+    }
+
+    public Game chooseGodCards(int i) {
+        // first player picks two god cards, the other player selects one of them, first player picks starting player
+        if (this.chosenGodCards.size() == 0) {
+            this.chosenGodCards.add(i);
+            return this;
+        }
+
+        if (this.chosenGodCards.size() == 1) {
+            if (this.chosenGodCards.get(0) == i) {
+                System.out.println("This god card has been chosen!");
+                return this;
+            }
+            this.chosenGodCards.add(i);
+            updatePlayerForChooseCard();
+            return this;
+        }
+
+        int playerBCard = i;
+        int playerACard;
+        if (this.chosenGodCards.get(0) == i) {
+            playerACard = this.chosenGodCards.get(1);
+        } else {
+            playerACard = this.chosenGodCards.get(0);
+        }
+
+        createGodCard(this.playerA, playerACard);
+        createGodCard(this.playerB, playerBCard);
+        return this;
+    }
+
+
+    private boolean readyForPlay() {
+        // have chosen god cards and init worker positions
+        return this.playerCardMap.containsKey(this.playerA) && this.playerCardMap.containsKey(this.playerB)
+                && this.allWorkersInited();
     }
 
     /**
      * Checks whether the current player wins the game.
      *
-     * @param playerId PLayer's ID.
      * @return {@code true} if player has a worker on top of a level-3 tower.
      */
-    public boolean checkWin(String playerId) {
-        assert this.currentPlayer.getPlayerId().equals(playerId);
+    public Player getWinner() {
+        if (!this.readyForPlay()) {
+            return null;
+        }
 
-        List<Worker> workers = currentPlayer.getAllWorkers();
-        for (Worker worker : workers) {
-            if (worker.getHeight() == WIN_HEIGHT) {
-                winner = currentPlayer;
-                System.out.println("Player " + winner.getPlayerId() + " wins!");
-                return true;
+        int gameState = this.currPlayer.getGodCard().getGameState();
+        if (gameState == 1) {
+            this.winner = this.currPlayer;
+        } else if (gameState == 0) {
+            if (this.currPlayer == this.playerA) {
+                this.winner = this.playerB;
+            } else if (this.currPlayer == this.playerB) {
+                this.winner = this.playerA;
             }
         }
-        return false;
-    }
-
-    public Grid getGrid() {
-        return grid;
+        return this.winner;
     }
 }

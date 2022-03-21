@@ -17,8 +17,8 @@ public class PlayerTest {
     @Test
     public void testInitWorkerPosition() {
         player.initWorkerPosition("WorkerA", 1, 2);
-        assertEquals(1, player.getWorker("WorkerA").getRowIndex());
-        assertEquals(2, player.getWorker("WorkerA").getColumnIndex());
+        assertEquals(1, player.getWorker("WorkerA").getX());
+        assertEquals(2, player.getWorker("WorkerA").getY());
         assertTrue(player.getWorker("WorkerA").hasInitPosition());
     }
 }

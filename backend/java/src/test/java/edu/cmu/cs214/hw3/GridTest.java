@@ -18,7 +18,7 @@ public class GridTest {
     @Test
     public void testUpdateAfterInit() {
         assertFalse(grid.isOccupied(3, 3));
-        worker.setPosition(3, 3);
+        worker.setPositionAndHeight(3, 3);
         grid.updateAfterInit(3, 3);
         assertTrue(grid.isOccupied(3, 3));
     }
@@ -52,7 +52,7 @@ public class GridTest {
 
     @Test
     public void testUpdateAfterMove() {
-        grid.updateAfterMove(0, 1, 1, 2);
+        grid.updateGridAfterMove(0, 1, 1, 2);
         assertFalse(grid.isOccupied(0, 1));
         assertTrue(grid.isOccupied(1, 2));
     }
@@ -80,8 +80,8 @@ public class GridTest {
 
         assertEquals(6, grid.buildablePositions(3, 3).size());
 
-        worker.setPosition(3, 2);
-        grid.updateAfterMove(3,1,3, 2);
+        worker.setPositionAndHeight(3, 2);
+        grid.updateGridAfterMove(3,1,3, 2);
         assertEquals(5, grid.buildablePositions(3, 3).size());
     }
 

@@ -21,7 +21,7 @@ public class WorkerTest {
 
     @Test
     public void testHasInitPosition() {
-        worker.setPosition(1,1);
+        worker.setPositionAndHeight(1,1);
         assertTrue(worker.hasInitPosition());
     }
 }

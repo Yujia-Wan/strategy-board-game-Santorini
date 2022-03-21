@@ -57,9 +57,9 @@ public class GameTest {
         game.move("B", "WorkerA", 1, 3);
         game.build("B", "WorkerA", 1, 2);
         game.newTurn();
-        assertFalse(game.checkWin("A"));
+        assertFalse(game.getWinner("A"));
         game.move("A", "WorkerB", 2, 2);
-        assertTrue(game.checkWin("A"));
+        assertTrue(game.getWinner("A"));
     }
 
     @Test

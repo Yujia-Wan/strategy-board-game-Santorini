@@ -1,23 +1,22 @@
 package edu.cmu.cs214.hw3;
 
 public class Worker {
-    private static final int ROW = 5;
-    private static final int COLUMN = 5;
-    private static final int WIN_HEIGHT = 5;
-    private String workerId;
-    private int row;
-    private int column;
+    private final int workerId;
+    private final String playerId;
+    private int x;
+    private int y;
     private int height;
 
     /**
      * Creates a new {@link Worker} instance.
      *
-     * @param newWorkerId The worker ID.
+     * @param workerId The worker ID.
      */
-    public Worker(String newWorkerId) {
-        this.workerId = newWorkerId;
-        this.row = -1;
-        this.column = -1;
+    public Worker(int workerId, String playerId) {
+        this.workerId = workerId;
+        this.playerId = playerId;
+        this.x = -1;
+        this.y = -1;
         this.height = 0;
     }
 
@@ -26,8 +25,17 @@ public class Worker {
      *
      * @return Worker's ID.
      */
-    public String getWorkerId() {
-        return workerId;
+    public int getWorkerId() {
+        return this.workerId;
+    }
+
+    /**
+     * Retrieves player's ID.
+     *
+     * @return Player's ID.
+     */
+    public String getPlayerId() {
+        return this.playerId;
     }
 
     /**
@@ -35,8 +43,8 @@ public class Worker {
      *
      * @return Row index.
      */
-    public int getRowIndex() {
-        return this.row;
+    public int getX() {
+        return this.x;
     }
 
     /**
@@ -44,8 +52,8 @@ public class Worker {
      *
      * @return Column index.
      */
-    public int getColumnIndex() {
-        return this.column;
+    public int getY() {
+        return this.y;
     }
 
     /**
@@ -60,16 +68,13 @@ public class Worker {
     /**
      * Sets worker's position.
      *
-     * @param row Row index of position.
-     * @param column Column index of Position.
+     * @param x Row index of position.
+     * @param y Column index of Position.
      */
-    public void setPosition(int row, int column) {
-        if (row < 0 || row >= ROW || column < 0 || column >= COLUMN) {
-            System.err.println("Invalid field position.");
-            return;
-        }
-        this.row = row;
-        this.column = column;
+    public void setPositionAndHeight(int x, int y, int height) {
+        this.x = x;
+        this.y = y;
+        this.height = height;
     }
 
     /**
@@ -77,13 +82,9 @@ public class Worker {
      *
      * @param height Worker's height.
      */
-    public void setHeight(int height) {
-        if (height < 0 || height > WIN_HEIGHT) {
-            System.err.println("Invalid worker height.");
-            return;
-        }
-        this.height = height;
-    }
+//    public void setHeight(int height) {
+//        this.height = height;
+//    }
 
     /**
      * Checks whether the worker has picked starting position.
@@ -91,7 +92,7 @@ public class Worker {
      * @return {@code true} if the worker has starting position.
      */
     public boolean hasInitPosition() {
-        if (this.getRowIndex() < 0 || this.getColumnIndex() < 0) {
+        if (this.x < 0 || this.y < 0) {
             return false;
         }
         return true;
