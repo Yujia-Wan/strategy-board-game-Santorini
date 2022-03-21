@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -13,7 +13,7 @@ public class Grid {
     private static final int[] DELTA_Y = new int[] {-1, -1, -1, 0, 0, 1, 1, 1};
     private int[][] height;
     private boolean[][] occupied;
-    private Worker[][] workerPosition;
+    private Worker[][] workerMap;
 
     /**
      * Creates a new {@link Grid} instance.
@@ -21,12 +21,12 @@ public class Grid {
     public Grid() {
         height = new int[ROW][COLUMN];
         occupied = new boolean[ROW][COLUMN];
-        workerPosition = new Worker[ROW][COLUMN];
+        workerMap = new Worker[ROW][COLUMN];
         for (int i = 0 ; i <ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
                 height[i][j] = 0;
                 occupied[i][j] = false;
-                workerPosition[i][j] = null;
+                workerMap[i][j] = null;
             }
         }
     }
@@ -39,6 +39,10 @@ public class Grid {
         return this.occupied[x][y];
     }
 
+    public Worker getFieldWorker(int x, int y) {
+        return this.workerMap[x][y];
+    }
+
     public boolean setWorkerPosition(Worker worker, int x, int y) {
         if (x < 0 || x >= ROW || y < 0 || y >= COLUMN || this.occupied[x][y]) {
             return false;
@@ -46,8 +50,20 @@ public class Grid {
 
         worker.setPositionAndHeight(x, y, height[x][y]);
         this.occupied[x][y] = true;
-        this.workerPosition[x][y] = worker;
+        this.workerMap[x][y] = worker;
         return true;
+    }
+
+    public Set<Point> getAllWorkersPosition() {
+        Set<Point> workersPos = new HashSet<>();
+        for (int i = 0; i < ROW; i++) {
+            for (int j = 0; j < COLUMN; j++) {
+                if (workerMap[i][j] != null) {
+                    workersPos.add(new Point(i, j));
+                }
+            }
+        }
+        return workersPos;
     }
 
     /**
@@ -94,8 +110,8 @@ public class Grid {
     public void updateGridAfterMove(Worker worker, int prevX, int prevY, int currX, int currY) {
         this.occupied[prevX][prevY] = false;
         this.occupied[currX][currY] = true;
-        this.workerPosition[prevX][prevY] = null;
-        this.workerPosition[currX][currY] = worker;
+        this.workerMap[prevX][prevY] = null;
+        this.workerMap[currX][currY] = worker;
     }
 
 

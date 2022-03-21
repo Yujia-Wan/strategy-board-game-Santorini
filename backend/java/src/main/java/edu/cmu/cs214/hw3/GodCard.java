@@ -11,6 +11,8 @@ public abstract class GodCard {
     protected static final int WIN = 1;
     protected static final int LOSE = 0;
     protected static final int PLAY = -1;
+    protected static final int ROW = 5;
+    protected static final int COLUMN = 5;
     protected Grid grid;
     protected Player player;
     protected boolean myTurn;
