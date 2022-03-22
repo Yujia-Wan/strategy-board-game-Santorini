@@ -6,12 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Game {
-    private static final int WIN_HEIGHT = 3;
-    private static final String[] GOD_CARDS = {"NonGod: Play game without god cards.",
-            "Demeter: Your worker may build one additional time, but not on the same space.",
-            "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " +
-                    "be forced one space straight backwards to an unoccupied space at any level.",
-            "Pan: You also win if your Worker moves down two or more levels."};
     private static final int NON_GOD = 0;
     private static final int DEMETER = 1;
     private static final int MINOTAUR = 2;
@@ -62,11 +56,115 @@ public class Game {
         return this.currWorker;
     }
 
+    /**
+     * Changes current player.
+     */
+    private void changePlayer() {
+        if (this.currPlayer == this.playerA) {
+            this.currPlayer = this.playerB;
+        } else if (this.currPlayer == this.playerB) {
+            this.currPlayer = this.playerA;
+        }
+    }
 
+    /**
+     * Checks if all players have chosen god cards.
+     *
+     * @return {@code true} if all players have chosen god cards.
+     */
+    public boolean finishChosenGodCards() {
+        return this.playerCardMap.containsKey(this.playerA)
+                && this.playerCardMap.containsKey(this.playerB);
+    }
+
+    /**
+     * Creates god card for the player.
+     *
+     * @param player Player.
+     * @param x God card's index.
+     */
+    private void createGodCard(Player player, int x) {
+        GodCard card;
+        switch (x) {
+            case NON_GOD:
+                card = new NonGodCard(this.grid, player);
+                break;
+            case DEMETER:
+                card = new Demeter(this.grid, player);
+                break;
+            case MINOTAUR:
+                card = new Minotaur(this.grid, player);
+                break;
+            case PAN:
+                card = new Pan(this.grid, player);
+                break;
+            default:
+                card = null;
+                System.out.println("No this god card.");
+        }
+        player.addGodCard(card);
+        this.playerCardMap.put(player, card);
+    }
+
+    /**
+     * Chooses god cards for a game.
+     *
+     * @param i God card's index.
+     * @return This Game
+     */
+    public Game chooseGodCards(int i) {
+        // first player picks two god cards, the other player selects one of them,
+        // first player picks starting player
+        if (this.chosenGodCards.size() == 0) {
+            this.chosenGodCards.add(i);
+            return this;
+        }
+
+        if (this.chosenGodCards.size() == 1) {
+            if (this.chosenGodCards.get(0) == i) {
+                System.out.println("This god card has been chosen!");
+                return this;
+            }
+            this.chosenGodCards.add(i);
+            changePlayer();
+            return this;
+        }
+
+        // first player has picked two god cards
+        // the other player selects one of them
+        // secondPlayerCard is i
+        int firstPlayerCard;
+        if (i == this.chosenGodCards.get(0)) {
+            firstPlayerCard = this.chosenGodCards.get(1);
+        } else if (i == this.chosenGodCards.get(1)) {
+            firstPlayerCard = this.chosenGodCards.get(0);
+        } else {
+            firstPlayerCard = -1;
+            System.out.println("Cannot choose this god card!");
+        }
+        createGodCard(this.currPlayer, i);
+        changePlayer();
+        createGodCard(this.currPlayer, firstPlayerCard);
+        return this;
+    }
+
+
+    /**
+     * Checks if all players' workers have initial positions.
+     *
+     * @return {@code true} if all players' workers have initial positions.
+     */
     private boolean allWorkersInited() {
         return this.playerA.allWorkersInited() && this.playerB.allWorkersInited();
     }
 
+    /**
+     * Picks starting position for a worker and update current player.
+     *
+     * @param workerId ID of worker chosen to set starting position.
+     * @param x Row index of starting position.
+     * @param y Column index of starting position.
+     */
     private void initWorkerPosition(int workerId, int x, int y) {
         if (this.currPlayer.getWorker(workerId).hasInitPosition()) {
             return;
@@ -115,82 +213,13 @@ public class Game {
     }
 
 
-    private void updatePlayerForChooseCard() {
-        if (this.currPlayer == this.playerA) {
-            this.currPlayer = playerB;
-        } else if (this.currPlayer == this.playerB) {
-            this.currPlayer = playerA;
-        }
-    }
-
-    private GodCard createGodCard(Player player, int x) {
-        GodCard card;
-        switch (x) {
-            case NON_GOD:
-                card = new NonGodCard(this.grid, player);
-                break;
-            case DEMETER:
-                card = new Demeter(this.grid, player);
-                break;
-            case MINOTAUR:
-                card = new Minotaur(this.grid, player);
-                break;
-            case PAN:
-                card = new Pan(this.grid, player);
-                break;
-            default:
-                card = null;
-                System.out.println("No this god card.");
-        }
-        player.addGodCard(card);
-        this.playerCardMap.put(player, card);
-        return card;
-    }
-
-    public Game chooseGodCards(int i) {
-        // first player picks two god cards, the other player selects one of them, first player picks starting player
-        if (this.chosenGodCards.size() == 0) {
-            this.chosenGodCards.add(i);
-            return this;
-        }
-
-        if (this.chosenGodCards.size() == 1) {
-            if (this.chosenGodCards.get(0) == i) {
-                System.out.println("This god card has been chosen!");
-                return this;
-            }
-            this.chosenGodCards.add(i);
-            updatePlayerForChooseCard();
-            return this;
-        }
-
-        int playerBCard = i;
-        int playerACard;
-        if (this.chosenGodCards.get(0) == i) {
-            playerACard = this.chosenGodCards.get(1);
-        } else {
-            playerACard = this.chosenGodCards.get(0);
-        }
-
-        createGodCard(this.playerA, playerACard);
-        createGodCard(this.playerB, playerBCard);
-        return this;
-    }
-
-
-    private boolean readyForPlay() {
-        // have chosen god cards and init worker positions
-        return this.playerCardMap.containsKey(this.playerA) && this.playerCardMap.containsKey(this.playerB)
-                && this.allWorkersInited();
-    }
-
     /**
      * Checks whether the current player wins the game.
      *
      * @return {@code true} if player has a worker on top of a level-3 tower.
      */
     public Player getWinner() {
-        if (!this.readyForPlay()) {
+        if (!this.finishChosenGodCards() || !this.allWorkersInited()) {
             return null;
         }
 

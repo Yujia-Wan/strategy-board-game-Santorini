@@ -2,7 +2,6 @@ package edu.cmu.cs214.hw3;
 
 public class Worker {
     private final int workerId;
-    private final String playerId;
     private int x;
     private int y;
     private int height;
@@ -12,9 +11,8 @@ public class Worker {
      *
      * @param workerId The worker ID.
      */
-    public Worker(int workerId, String playerId) {
+    public Worker(int workerId) {
         this.workerId = workerId;
-        this.playerId = playerId;
         this.x = -1;
         this.y = -1;
         this.height = 0;
@@ -27,15 +25,6 @@ public class Worker {
      */
     public int getWorkerId() {
         return this.workerId;
-    }
-
-    /**
-     * Retrieves player's ID.
-     *
-     * @return Player's ID.
-     */
-    public String getPlayerId() {
-        return this.playerId;
     }
 
     /**
@@ -66,10 +55,11 @@ public class Worker {
     }
 
     /**
-     * Sets worker's position.
+     * Sets worker's position and height.
      *
      * @param x Row index of position.
      * @param y Column index of Position.
+     * @param height Worker's height.
      */
     public void setPositionAndHeight(int x, int y, int height) {
         this.x = x;
@@ -78,23 +68,11 @@ public class Worker {
     }
 
     /**
-     * Sets worker's height at current position.
-     *
-     * @param height Worker's height.
-     */
-//    public void setHeight(int height) {
-//        this.height = height;
-//    }
-
-    /**
      * Checks whether the worker has picked starting position.
      *
      * @return {@code true} if the worker has starting position.
      */
     public boolean hasInitPosition() {
-        if (this.x < 0 || this.y < 0) {
-            return false;
-        }
-        return true;
+        return this.x >= 0 && this.y >= 0;
     }
 }

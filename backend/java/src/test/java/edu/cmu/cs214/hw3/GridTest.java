@@ -25,7 +25,7 @@ public class GridTest {
 
     @Test
     public void testMovablePositions() {
-        assertEquals(8, grid.movablePositions(worker, 3, 3).size());
+        assertEquals(8, grid.getMovablePositions(worker, 3, 3).size());
 
         grid.buildTowerLevel(2,2);
         grid.buildTowerLevel(2,2);
@@ -44,10 +44,10 @@ public class GridTest {
         grid.buildTowerLevel(4,4);
         grid.buildTowerLevel(4,4);
 
-        assertEquals(4, grid.movablePositions(worker, 3, 3).size());
+        assertEquals(4, grid.getMovablePositions(worker, 3, 3).size());
 
         worker.setHeight(2);
-        assertEquals(6, grid.movablePositions(worker, 3, 3).size());
+        assertEquals(6, grid.getMovablePositions(worker, 3, 3).size());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class GridTest {
 
     @Test
     public void testBuildablePositions() {
-        assertEquals(8, grid.buildablePositions(3, 3).size());
+        assertEquals(8, grid.getBuildablePositions(3, 3).size());
 
         grid.buildTowerLevel(2,2);
         grid.buildTowerLevel(2,2);
@@ -78,11 +78,11 @@ public class GridTest {
         grid.buildTowerLevel(4,4);
         grid.buildTowerLevel(4,4);
 
-        assertEquals(6, grid.buildablePositions(3, 3).size());
+        assertEquals(6, grid.getBuildablePositions(3, 3).size());
 
         worker.setPositionAndHeight(3, 2);
         grid.updateGridAfterMove(3,1,3, 2);
-        assertEquals(5, grid.buildablePositions(3, 3).size());
+        assertEquals(5, grid.getBuildablePositions(3, 3).size());
     }
 
     @Test

@@ -4,11 +4,13 @@ import java.awt.*;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * Pan: You also win if your Worker moves down two or more levels.
+ */
 public class Pan extends GodCard {
     private static final int ALSO_WIN_HEIGHT = 2;
     private int moveDownHeight;
 
-    // Pan: You also win if your Worker moves down two or more levels.
     public Pan(Grid grid, Player player) {
         super(grid, player);
         this.moveDownHeight = -1;
@@ -20,15 +22,17 @@ public class Pan extends GodCard {
         int prevX = moveWorker.getX();
         int prevY = moveWorker.getY();
         int prevHeight = moveWorker.getHeight();
-        Set<Point> movablePos = this.grid.movablePositions(prevX, prevY);
+        Set<Point> movablePos = this.grid.getMovablePositions(prevX, prevY);
         Point target = new Point(x, y);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
             this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
             this.moveDownHeight = prevHeight - moveWorker.getHeight();
             return true;
+        } else {
+            System.err.println("Target field[" + x + "][" + y + "] is not movable.");
+            return false;
         }
-        return false;
     }
 
     @Override
@@ -37,6 +41,7 @@ public class Pan extends GodCard {
         for (Worker w: workers) {
             if (w.getHeight() == WIN_HEIGHT || this.moveDownHeight >= ALSO_WIN_HEIGHT) {
                 this.state = WIN;
+                this.moveDownHeight = -1;
             }
         }
     }

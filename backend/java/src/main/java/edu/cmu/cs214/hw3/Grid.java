@@ -8,7 +8,6 @@ public class Grid {
     private static final int ROW = 5;
     private static final int COLUMN = 5;
     private static final int DOME_HEIGHT = 4;
-    private static final int WIN_HEIGHT = 3;
     private static final int[] DELTA_X = new int[] {-1, 0, 1, -1, 1, -1, 0, 1};
     private static final int[] DELTA_Y = new int[] {-1, -1, -1, 0, 0, 1, 1, 1};
     private int[][] height;
@@ -43,17 +42,6 @@ public class Grid {
         return this.workerMap[x][y];
     }
 
-    public boolean setWorkerPosition(Worker worker, int x, int y) {
-        if (x < 0 || x >= ROW || y < 0 || y >= COLUMN || this.occupied[x][y]) {
-            return false;
-        }
-
-        worker.setPositionAndHeight(x, y, height[x][y]);
-        this.occupied[x][y] = true;
-        this.workerMap[x][y] = worker;
-        return true;
-    }
-
     public Set<Point> getAllWorkersPosition() {
         Set<Point> workersPos = new HashSet<>();
         for (int i = 0; i < ROW; i++) {
@@ -69,13 +57,16 @@ public class Grid {
     /**
      * Updates field's status after initializing worker's starting position.
      *
+     * @param worker Initialized worker.
      * @param x X coordinate of worker's position.
      * @param y Y coordinate of worker's position.
      */
-    public void updateAfterInit(int x, int y) {
-        occupied[x][y] = true;
-    }
+    public void updateAfterInitWorkerPos(Worker worker, int x, int y) {
+        assert(0 <= x && x < ROW && 0 <= y && y < COLUMN && !this.occupied[x][y]);
 
+        this.occupied[x][y] = true;
+        this.workerMap[x][y] = worker;
+    }
 
     /**
      * Retrieves positions the worker can be moved to.
@@ -84,12 +75,12 @@ public class Grid {
      * @param y Y coordinate of worker's position.
      * @return A set of Points in the grid.
      */
-    public Set<Point> movablePositions(int x, int y) {
+    public Set<Point> getMovablePositions(int x, int y) {
         Set<Point> movable = new HashSet<>();
         for (int i = 0; i < DELTA_X.length; i++) {
             int coordX = x + DELTA_X[i];
             int coordY = y + DELTA_Y[i];
-            if (coordX >= 0 && coordX < ROW && (coordY) >= 0 && (coordY) < COLUMN
+            if (0 <= coordX && coordX < ROW && 0 <= coordY && coordY < COLUMN
                     && !this.occupied[coordX][coordY]
                     && (this.height[coordX][coordY] - this.height[x][y]) <= 1) {
                 Point point = new Point(coordX, coordY);
@@ -102,6 +93,7 @@ public class Grid {
     /**
      * Updates field's status after move action.
      *
+     * @param worker Worker been moved.
      * @param prevX X coordinate of worker's previous position.
      * @param prevY Y coordinate of worker's previous position.
      * @param currX X coordinate of worker's current position.
@@ -114,7 +106,6 @@ public class Grid {
         this.workerMap[currX][currY] = worker;
     }
 
-
     /**
      * Retrieves positions the worker can build tower on.
      *
@@ -122,12 +113,12 @@ public class Grid {
      * @param y Y coordinate of worker's position.
      * @return A set of points in the grid.
      */
-    public Set<Point> buildablePositions(int x, int y) {
+    public Set<Point> getBuildablePositions(int x, int y) {
         Set<Point> buildable = new HashSet<>();
         for (int i = 0; i < DELTA_X.length; i++) {
             int coordX = x + DELTA_X[i];
             int coordY = y + DELTA_Y[i];
-            if (coordX >= 0 && coordX < ROW && (coordY) >= 0 && (coordY) < COLUMN
+            if (0 <= coordX && coordX < ROW && 0 <= coordY && coordY < COLUMN
                     && !this.occupied[coordX][coordY]
                     && this.height[coordX][coordY] < DOME_HEIGHT) {
                 Point point = new Point(coordX, coordY);
@@ -143,15 +134,12 @@ public class Grid {
      * @param x X coordinate of field.
      * @param y Y coordinate of field.
      */
-    public boolean buildTowerLevel(int x, int y) {
-        if (x < 0 || x >= ROW || y < 0 || y >= COLUMN || this.occupied[x][y]) {
-            return false;
-        }
+    public void buildTowerLevel(int x, int y) {
+        assert(0 <= x && x < ROW && 0 <= y && y < COLUMN && !this.occupied[x][y]);
 
         height[x][y] += 1;
         if (height[x][y] == DOME_HEIGHT) {
             occupied[x][y] = true;
         }
-        return true;
     }
 }

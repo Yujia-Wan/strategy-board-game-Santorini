@@ -7,25 +7,25 @@ import java.util.Set;
 public abstract class GodCard {
     protected static final String MOVE = "move";
     protected static final String BUILD = "build";
+    protected static final int ROW = 5;
+    protected static final int COLUMN = 5;
     protected static final int WIN_HEIGHT = 3;
     protected static final int WIN = 1;
     protected static final int LOSE = 0;
     protected static final int PLAY = -1;
-    protected static final int ROW = 5;
-    protected static final int COLUMN = 5;
     protected Grid grid;
     protected Player player;
     protected boolean myTurn;
-    protected int state;
     protected String action;
+    protected int state;
     protected int movedWorkerId;
 
     public GodCard(Grid grid, Player player) {
         this.grid = grid;
         this.player = player;
         this.myTurn = false;
-        this.state = PLAY;
         this.action = MOVE;
+        this.state = PLAY;
         this.movedWorkerId = -1;
     }
 
@@ -40,49 +40,54 @@ public abstract class GodCard {
     /**
      * Player moves the selected worker to an adjacent unoccupied field.
      *
-     * @param worker
-     * @param x
-     * @param y
+     * @param worker Worker to be moved.
+     * @param x Target position's x coordinate.
+     * @param y Target position's y coordinate.
      * @return {@code true} if worker moves successfully.
      */
     public boolean move(Worker worker, int x, int y) {
         Worker moveWorker = this.player.getWorker(worker.getWorkerId());
         int prevX = moveWorker.getX();
         int prevY = moveWorker.getY();
-        Set<Point> movablePos = this.grid.movablePositions(prevX, prevY);
+        Set<Point> movablePos = this.grid.getMovablePositions(prevX, prevY);
         Point target = new Point(x, y);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
             this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
             return true;
+        } else {
+            System.err.println("Target field[" + x + "][" + y + "] is not movable.");
+            return false;
         }
-        return false;
     }
 
     /**
      * Player adds a block or dome to an unoccupied adjacent field of worker's
      * new position.
      *
-     * @param worker
-     * @param x
-     * @param y
+     * @param worker Worker to build a tower level.
+     * @param x Target position's x coordinate.
+     * @param y Target position's y coordinate.
      * @return {@code true} if worker builds tower successfully.
      */
     public boolean build(Worker worker, int x, int y) {
         Worker buildWorker = this.player.getWorker(worker.getWorkerId());
         int workerX = buildWorker.getX();
         int workerY = buildWorker.getY();
-        Set<Point> buildablePos = this.grid.buildablePositions(workerX, workerY);
+        Set<Point> buildablePos = this.grid.getBuildablePositions(workerX, workerY);
         Point target = new Point(x, y);
         if (buildablePos.contains(target)) {
             this.grid.buildTowerLevel(x, y);
             return true;
+        } else {
+            System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
+            return false;
         }
-
-        System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
-        return false;
     }
 
+    /**
+     * Checks if the player has won.
+     */
     public void checkWin() {
         List<Worker> workers = this.player.getAllWorkers();
         for (Worker w: workers) {
@@ -92,6 +97,9 @@ public abstract class GodCard {
         }
     }
 
+    /**
+     * Moves to next action and checks if the player needs to end turn.
+     */
     public void nextAction() {
         if (this.action.equals(MOVE)) {
             this.action = BUILD;
@@ -102,9 +110,17 @@ public abstract class GodCard {
         }
     }
 
+    /**
+     * Executes player's action of move or build.
+     *
+     * @param worker Worker to be moved or build tower level.
+     * @param x Destination x index.
+     * @param y Destination y index.
+     * @return {@code true} if action is executed successfully.
+     */
     public boolean execute(Worker worker, int x, int y) {
         if (this.action.equals(MOVE)) {
-            if (this.player.hasMovablePositions()) {
+            if (!this.player.hasMovablePositions()) {
                 System.out.println("Player " + this.player.getPlayerId() + " cannot move any worker.");
                 this.state = LOSE;
                 return false;
@@ -116,12 +132,12 @@ public abstract class GodCard {
 
             this.movedWorkerId = worker.getWorkerId();
         } else if (this.action.equals(BUILD)) {
-            if (!(worker.getWorkerId() == this.movedWorkerId)) {
+            if (worker.getWorkerId() != this.movedWorkerId) {
                 return false;
             }
 
-            if (!this.player.hasBuildablePositions(worker)) {
-                System.out.println("Worker " + this.movedWorkerId + " cannot build any tower level.");
+            if (!this.player.hasBuildablePositions()) {
+                System.out.println("Player " + this.player.getPlayerId() + " cannot build any tower level.");
                 this.state = LOSE;
                 return false;
             }
@@ -129,6 +145,8 @@ public abstract class GodCard {
             if (!this.build(worker, x, y)) {
                 return false;
             }
+
+            this.movedWorkerId = -1;
         }
         checkWin();
         nextAction();

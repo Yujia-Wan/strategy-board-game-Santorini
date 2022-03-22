@@ -22,11 +22,12 @@ public class Player {
      * Creates a new {@link Player} instance.
      *
      * @param playerId Player's ID.
+     * @param grid Game grid.
      */
     public Player(String playerId, Grid grid) {
         this.playerId = playerId;
-        this.worker0 = new Worker(WORKER0, this.playerId);
-        this.worker1 = new Worker(WORKER1, this.playerId);
+        this.worker0 = new Worker(WORKER0);
+        this.worker1 = new Worker(WORKER1);
         this.workerMap = new HashMap<>();
         workerMap.put(WORKER0, worker0);
         workerMap.put(WORKER1, worker1);
@@ -67,24 +68,11 @@ public class Player {
         return new ArrayList<>(workerMap.values());
     }
 
-
     /**
-     * Picks starting position for a worker.
+     * Checks all workers' initial positions' state.
      *
-     * @param workerId ID of worker chosen to set starting position.
-     * @param x Row index of starting position.
-     * @param y Column index of starting position.
+     * @return {@code true} if all workers have initial positions.
      */
-    public boolean initWorkerPosition(int workerId, int x, int y) {
-        if (!this.getWorker(workerId).hasInitPosition()) {
-            Worker worker = this.getWorker(workerId);
-            worker.setPositionAndHeight(x, y, 0);
-            this.grid.setWorkerPosition(worker, x, y);
-            return true;
-        }
-        return false;
-    }
-
     public boolean allWorkersInited() {
         for (Worker worker: this.getAllWorkers()) {
             if (!worker.hasInitPosition()) {
@@ -94,6 +82,23 @@ public class Player {
         return true;
     }
 
+    /**
+     * Picks starting position for a worker.
+     *
+     * @param workerId ID of worker chosen to set starting position.
+     * @param x Row index of starting position.
+     * @param y Column index of starting position.
+     */
+    public void initWorkerPosition(int workerId, int x, int y) {
+        Worker worker = this.getWorker(workerId);
+        if (!worker.hasInitPosition()) {
+            worker.setPositionAndHeight(x, y, 0);
+            this.grid.updateAfterInitWorkerPos(worker, x, y);
+        } else {
+            System.err.println("This worker already has initial position!");
+        }
+    }
+
     public Set<Point> getAllWorkersPosition() {
         Set<Point> positions = new HashSet<>();
         positions.add(new Point(this.worker0.getX(), this.worker0.getY()));
@@ -101,22 +106,31 @@ public class Player {
         return positions;
     }
 
-
+    /**
+     * Retrieves all workers' movable positions.
+     *
+     * @return {@code true} if player has movable position.
+     */
     public boolean hasMovablePositions() {
         Set<Point> allMovable = new HashSet<>();
         for (Worker w: this.getAllWorkers()) {
-            allMovable.addAll(this.grid.movablePositions(w.getX(), w.getY()));
+            allMovable.addAll(this.grid.getMovablePositions(w.getX(), w.getY()));
         }
-        if (allMovable.isEmpty()) {
-            return false;
-        }
-        return true;
+        return !allMovable.isEmpty();
     }
 
-    public boolean hasBuildablePositions(Worker worker) {
-        return !this.grid.buildablePositions(worker.getX(), worker.getY()).isEmpty();
+    /**
+     * Retrieves all workers' buildable positions.
+     *
+     * @return {@code true} if player has buildable position.
+     */
+    public boolean hasBuildablePositions() {
+        Set<Point> allBuildable = new HashSet<>();
+        for (Worker w: this.getAllWorkers()) {
+            allBuildable.addAll(this.grid.getBuildablePositions(w.getX(), w.getY()));
+        }
+        return !allBuildable.isEmpty();
     }
-
 
     public void addGodCard(GodCard godCard) {
         this.godCard = godCard;
