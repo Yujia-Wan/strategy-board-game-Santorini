@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Set;
 
 /**
@@ -27,20 +27,20 @@ public class Demeter extends GodCard {
      * @param y Y coordinate to build.
      * @param firstBuildX X coordinate of first build.
      * @param firstBuildY Y coordinate of first build.
-     * @return
+     * @return {@code true} if second build succeeds.
      */
     public boolean secondBuild(Worker worker, int x, int y,
                                int firstBuildX, int firstBuildY) {
-        Worker buildWorker = this.player.getWorker(worker.getWorkerId());
+        Worker buildWorker = this.getPlayer().getWorker(worker.getWorkerId());
         int workerX = buildWorker.getX();
         int workerY = buildWorker.getY();
-        Set<Point> buildablePos = this.grid.getBuildablePositions(workerX, workerY);
+        Set<Point> buildablePos = this.getGrid().getBuildablePositions(workerX, workerY);
         Point firstBuild = new Point(firstBuildX, firstBuildY);
         // not on the same space
         buildablePos.remove(firstBuild);
         Point target = new Point(x, y);
         if (buildablePos.contains(target)) {
-            this.grid.buildTowerLevel(x, y);
+            this.getGrid().buildTowerLevel(x, y);
             return true;
         } else {
             System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
@@ -50,15 +50,15 @@ public class Demeter extends GodCard {
 
     @Override
     public void nextAction() {
-        if (this.action.equals(MOVE)) {
-            this.action = BUILD;
-            this.myTurn = true;
-        } else if (this.action.equals(BUILD)) {
-            this.action = SECOND_BUILD;
-            this.myTurn = true;
-        } else if (this.action.equals(SECOND_BUILD)) {
-            this.action = MOVE;
-            this.myTurn = false;
+        if (this.getAction().equals(MOVE)) {
+            this.setAction(BUILD);
+            this.setMyTurn(true);
+        } else if (this.getAction().equals(BUILD)) {
+            this.setAction(SECOND_BUILD);
+            this.setMyTurn(true);
+        } else if (this.getAction().equals(SECOND_BUILD)) {
+            this.setAction(MOVE);
+            this.setMyTurn(false);
             this.firstBuildX = -1;
             this.firstBuildY = -1;
         }
@@ -66,10 +66,10 @@ public class Demeter extends GodCard {
 
     @Override
     public boolean execute(Worker worker, int x, int y) {
-        if (this.action.equals(MOVE)) {
-            if (!this.player.hasMovablePositions()) {
-                System.out.println("Player " + this.player.getPlayerId() + " cannot move any worker.");
-                this.state = LOSE;
+        if (this.getAction().equals(MOVE)) {
+            if (!this.getPlayer().hasMovablePositions()) {
+                System.out.println("Player " + this.getPlayer().getPlayerId() + " cannot move any worker.");
+                this.setState(LOSE);
                 return false;
             }
 
@@ -77,26 +77,26 @@ public class Demeter extends GodCard {
                 return false;
             }
 
-            this.movedWorkerId = worker.getWorkerId();
-        } else if (this.action.equals(BUILD) || this.action.equals(SECOND_BUILD)) {
-            if (worker.getWorkerId() != this.movedWorkerId) {
+            this.setMovedWorkerId(worker.getWorkerId());
+        } else if (this.getAction().equals(BUILD) || this.getAction().equals(SECOND_BUILD)) {
+            if (worker.getWorkerId() != this.getMovedWorkerId()) {
                 return false;
             }
 
-            if (!this.player.hasBuildablePositions()) {
-                System.out.println("Player " + this.player.getPlayerId() + " cannot build any tower level.");
-                this.state = LOSE;
+            if (!this.getPlayer().hasBuildablePositions()) {
+                System.out.println("Player " + this.getPlayer().getPlayerId() + " cannot build any tower level.");
+                this.setState(LOSE);
                 return false;
             }
 
-            if (this.action.equals(BUILD)) {
+            if (this.getAction().equals(BUILD)) {
                 if (!this.build(worker, x, y)) {
                     return false;
                 }
 
                 this.firstBuildX = x;
                 this.firstBuildY = y;
-            } else if (this.action.equals(SECOND_BUILD)) {
+            } else if (this.getAction().equals(SECOND_BUILD)) {
                 // skip the optional second build by clicking on the worker's current location
                 if ((x != worker.getX() || y != worker.getY())
                         && !secondBuild(worker, x, y, this.firstBuildX, this.firstBuildY)) {

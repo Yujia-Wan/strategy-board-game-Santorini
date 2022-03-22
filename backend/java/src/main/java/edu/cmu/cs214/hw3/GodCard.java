@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
@@ -13,12 +13,12 @@ public abstract class GodCard {
     protected static final int WIN = 1;
     protected static final int LOSE = 0;
     protected static final int PLAY = -1;
-    protected Grid grid;
-    protected Player player;
-    protected boolean myTurn;
-    protected String action;
-    protected int state;
-    protected int movedWorkerId;
+    private Grid grid;
+    private Player player;
+    private boolean myTurn;
+    private String action;
+    private int state;
+    private int movedWorkerId;
 
     public GodCard(Grid grid, Player player) {
         this.grid = grid;
@@ -29,12 +29,44 @@ public abstract class GodCard {
         this.movedWorkerId = -1;
     }
 
-    public boolean isMyTurn() {
+    public Grid getGrid() {
+        return this.grid;
+    }
+
+    public Player getPlayer() {
+        return this.player;
+    }
+
+    public void setMyTurn(boolean value) {
+        this.myTurn = value;
+    }
+
+    public boolean getMyTurn() {
         return this.myTurn;
     }
 
-    public int getGameState() {
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public String getAction() {
+        return this.action;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public int getState() {
         return this.state;
+    }
+
+    public void setMovedWorkerId(int id) {
+        this.movedWorkerId = id;
+    }
+
+    public int getMovedWorkerId() {
+        return this.movedWorkerId;
     }
 
     /**

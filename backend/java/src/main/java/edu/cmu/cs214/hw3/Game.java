@@ -30,6 +30,7 @@ public class Game {
     /**
      * Creates a new {@link Game} instance.
      *
+     * @param grid Game grid.
      * @param playerA ID of the first player.
      * @param playerB ID of the second player.
      */
@@ -185,9 +186,9 @@ public class Game {
      * Changes turn to another player.
      */
     public void newTurn() {
-        if (this.currPlayer == this.playerA && !this.playerA.getGodCard().isMyTurn()) {
+        if (this.currPlayer == this.playerA && !this.playerA.getGodCard().getMyTurn()) {
             this.currPlayer = this.playerB;
-        } else if (this.currPlayer == this.playerB && !this.playerB.getGodCard().isMyTurn()) {
+        } else if (this.currPlayer == this.playerB && !this.playerB.getGodCard().getMyTurn()) {
             this.currPlayer = this.playerA;
         }
     }
@@ -197,6 +198,7 @@ public class Game {
      *
      * @param x X coordinate of target position.
      * @param y Y coordinate of target position.
+     * @return This game.
      */
     public Game play(int x, int y) {
         if (!this.allWorkersInited()) {
@@ -223,7 +225,7 @@ public class Game {
             return null;
         }
 
-        int gameState = this.currPlayer.getGodCard().getGameState();
+        int gameState = this.currPlayer.getGodCard().getState();
         if (gameState == 1) {
             this.winner = this.currPlayer;
         } else if (gameState == 0) {

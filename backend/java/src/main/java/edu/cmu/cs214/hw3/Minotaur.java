@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -29,15 +29,15 @@ public class Minotaur extends GodCard {
      */
     private void moveTwoWorkers(Worker myWorker, Worker oppWorker, int prevX, int prevY,
                                int dstX, int dstY, int oppX, int oppY) {
-        oppWorker.setPositionAndHeight(oppX, oppY, this.grid.getFieldHeight(oppX, oppY));
-        this.grid.updateGridAfterMove(oppWorker, dstX, dstY, oppX, oppY);
-        myWorker.setPositionAndHeight(dstX, dstY, this.grid.getFieldHeight(dstX, dstY));
-        this.grid.updateGridAfterMove(myWorker, prevX, prevY, dstX, dstY);
+        oppWorker.setPositionAndHeight(oppX, oppY, this.getGrid().getFieldHeight(oppX, oppY));
+        this.getGrid().updateGridAfterMove(oppWorker, dstX, dstY, oppX, oppY);
+        myWorker.setPositionAndHeight(dstX, dstY, this.getGrid().getFieldHeight(dstX, dstY));
+        this.getGrid().updateGridAfterMove(myWorker, prevX, prevY, dstX, dstY);
     }
 
     @Override
     public boolean move(Worker worker, int x, int y) {
-        Worker moveWorker = this.player.getWorker(worker.getWorkerId());
+        Worker moveWorker = this.getPlayer().getWorker(worker.getWorkerId());
         int prevX = moveWorker.getX();
         int prevY = moveWorker.getY();
         Point target = new Point(x, y);
@@ -45,8 +45,8 @@ public class Minotaur extends GodCard {
         // first check if target is an opponent worker's space, if it is and valid, change two workers'
         // position; if not, do regular move
         // get opponent workers' positions
-        Set<Point> allWorkersPos = this.grid.getAllWorkersPosition();
-        Set<Point> myWorkersPos = this.player.getAllWorkersPosition();
+        Set<Point> allWorkersPos = this.getGrid().getAllWorkersPosition();
+        Set<Point> myWorkersPos = this.getPlayer().getAllWorkersPosition();
         Set<Point> oppWorkersPos = new HashSet<>();
         for (Point p: allWorkersPos) {
             if (!myWorkersPos.contains(p)) {
@@ -54,11 +54,11 @@ public class Minotaur extends GodCard {
             }
         }
         if (oppWorkersPos.contains(target)) {
-            Worker oppWorker = this.grid.getFieldWorker(x, y);
+            Worker oppWorker = this.getGrid().getFieldWorker(x, y);
             if (prevX == x && prevY != y) {
                 int oppTargetX = x;
                 int oppTargetY = y + (prevY < y? 1: -1);
-                if (0 <= oppTargetY && oppTargetY < COLUMN && !this.grid.isOccupied(oppTargetX, oppTargetY)) {
+                if (0 <= oppTargetY && oppTargetY < COLUMN && !this.getGrid().isOccupied(oppTargetX, oppTargetY)) {
                     // can be forced one space straight backwards
                     moveTwoWorkers(worker, oppWorker, prevX, prevY, x, y, oppTargetX, oppTargetY);
                     return true;
@@ -68,7 +68,7 @@ public class Minotaur extends GodCard {
             if (prevY == y && prevX != x) {
                 int oppTargetX = x + (prevX < x? 1: -1);
                 int oppTargetY = y;
-                if (0 <= oppTargetX && oppTargetX < ROW && !this.grid.isOccupied(oppTargetX, oppTargetY)) {
+                if (0 <= oppTargetX && oppTargetX < ROW && !this.getGrid().isOccupied(oppTargetX, oppTargetY)) {
                     moveTwoWorkers(worker, oppWorker, prevX, prevY, x, y, oppTargetX, oppTargetY);
                     return true;
                 }
@@ -78,17 +78,17 @@ public class Minotaur extends GodCard {
                 int oppTargetX = x + (prevX < x? 1: -1);
                 int oppTargetY = y + (prevY < y? 1: -1);
                 if (0 <= oppTargetX && oppTargetX < ROW && 0 <= oppTargetY && oppTargetY < COLUMN
-                        && !this.grid.isOccupied(oppTargetX, oppTargetY)) {
+                        && !this.getGrid().isOccupied(oppTargetX, oppTargetY)) {
                     moveTwoWorkers(worker, oppWorker, prevX, prevY, x, y, oppTargetX, oppTargetY);
                     return true;
                 }
             }
         }
 
-        Set<Point> movablePos = this.grid.getMovablePositions(x, y);
+        Set<Point> movablePos = this.getGrid().getMovablePositions(x, y);
         if (movablePos.contains(target)) {
-            moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
-            this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
+            moveWorker.setPositionAndHeight(x, y, this.getGrid().getFieldHeight(x, y));
+            this.getGrid().updateGridAfterMove(worker, prevX, prevY, x, y);
             return true;
         } else {
             System.err.println("Target field[" + x + "][" + y + "] is not movable.");

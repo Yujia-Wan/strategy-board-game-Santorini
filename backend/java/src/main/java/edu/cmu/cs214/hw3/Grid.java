@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 

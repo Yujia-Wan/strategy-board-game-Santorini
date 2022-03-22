@@ -1,6 +1,6 @@
 package edu.cmu.cs214.hw3;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
@@ -18,15 +18,15 @@ public class Pan extends GodCard {
 
     @Override
     public boolean move(Worker worker, int x, int y) {
-        Worker moveWorker = this.player.getWorker(worker.getWorkerId());
+        Worker moveWorker = this.getPlayer().getWorker(worker.getWorkerId());
         int prevX = moveWorker.getX();
         int prevY = moveWorker.getY();
         int prevHeight = moveWorker.getHeight();
-        Set<Point> movablePos = this.grid.getMovablePositions(prevX, prevY);
+        Set<Point> movablePos = this.getGrid().getMovablePositions(prevX, prevY);
         Point target = new Point(x, y);
         if (movablePos.contains(target)) {
-            moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
-            this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
+            moveWorker.setPositionAndHeight(x, y, this.getGrid().getFieldHeight(x, y));
+            this.getGrid().updateGridAfterMove(worker, prevX, prevY, x, y);
             this.moveDownHeight = prevHeight - moveWorker.getHeight();
             return true;
         } else {
@@ -37,10 +37,10 @@ public class Pan extends GodCard {
 
     @Override
     public void checkWin() {
-        List<Worker> workers = this.player.getAllWorkers();
+        List<Worker> workers = this.getPlayer().getAllWorkers();
         for (Worker w: workers) {
             if (w.getHeight() == WIN_HEIGHT || this.moveDownHeight >= ALSO_WIN_HEIGHT) {
-                this.state = WIN;
+                this.setState(WIN);
                 this.moveDownHeight = -1;
             }
         }
