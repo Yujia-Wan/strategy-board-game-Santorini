@@ -11,17 +11,17 @@ public class WorkerTest {
 
     @Before
     public void setUp() {
-        worker = new Worker("A");
+        this.worker = new Worker(0);
     }
 
     @Test
     public void testHasNoInitPosition() {
-        assertFalse(worker.hasInitPosition());
+        assertFalse(this.worker.hasInitPosition());
     }
 
     @Test
     public void testHasInitPosition() {
-        worker.setPositionAndHeight(1,1);
-        assertTrue(worker.hasInitPosition());
+        this.worker.setPositionAndHeight(1,1, 0);
+        assertTrue(this.worker.hasInitPosition());
     }
 }

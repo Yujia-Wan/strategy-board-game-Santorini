@@ -8,17 +8,26 @@ import static org.junit.Assert.assertTrue;
 
 public class PlayerTest {
     private Player player;
+    private Grid grid;
 
     @Before
     public void setUp() {
-        player = new Player("A");
+        this.grid = new Grid();
+        this.player = new Player("A", this.grid);
     }
 
     @Test
     public void testInitWorkerPosition() {
-        player.initWorkerPosition("WorkerA", 1, 2);
-        assertEquals(1, player.getWorker("WorkerA").getX());
-        assertEquals(2, player.getWorker("WorkerA").getY());
-        assertTrue(player.getWorker("WorkerA").hasInitPosition());
+        this.player.initWorkerPosition(0, 1, 2);
+        assertEquals(1, this.player.getWorker(0).getX());
+        assertEquals(2, this.player.getWorker(0).getY());
+        assertTrue(this.player.getWorker(0).hasInitPosition());
+    }
+
+    @Test
+    public void testAllWorkersInited() {
+        this.player.initWorkerPosition(0, 1, 1);
+        this.player.initWorkerPosition(1, 2, 2);
+        assertTrue(this.player.allWorkersInited());
     }
 }
