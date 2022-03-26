@@ -12,14 +12,14 @@ public class GridTest {
     @Before
     public void setUp() {
         grid = new Grid();
-        worker = new Worker(0);
+        worker = new Worker("A",0);
     }
 
     @Test
     public void testUpdateAfterInitWorkerPos() {
         assertFalse(grid.isOccupied(3, 3));
         worker.setPositionAndHeight(3, 3, 0);
-        grid.updateAfterInitWorkerPos(worker, 3, 3);
+        grid.updateAfterInitWorkerPos(worker);
         assertTrue(grid.isOccupied(3, 3));
     }
 
@@ -49,13 +49,13 @@ public class GridTest {
         grid.buildTowerLevel(3,3);
         grid.buildTowerLevel(3,3);
         worker.setPositionAndHeight(3,3,2);
-        grid.updateGridAfterMove(worker,2,2,3,3);
+        grid.updateGridAfterMove(worker,2,2);
         assertEquals(6, grid.getMovablePositions(3, 3).size());
     }
 
     @Test
     public void testUpdateGridAfterMove() {
-        grid.updateGridAfterMove(worker,0, 1, 1, 2);
+        grid.updateGridAfterMove(worker,0, 1);
         assertFalse(grid.isOccupied(0, 1));
         assertTrue(grid.isOccupied(1, 2));
     }
@@ -84,7 +84,7 @@ public class GridTest {
         assertEquals(6, grid.getBuildablePositions(3, 3).size());
 
         worker.setPositionAndHeight(3, 2,0);
-        grid.updateGridAfterMove(worker,3,1,3, 2);
+        grid.updateGridAfterMove(worker,3,1);
         assertEquals(5, grid.getBuildablePositions(3, 3).size());
     }
 

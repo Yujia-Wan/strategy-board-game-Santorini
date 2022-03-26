@@ -24,7 +24,7 @@ public class Game {
     }
 
     public Game(Grid grid) {
-        this(grid, new Player("A", grid), new Player("B", grid));
+        this(grid, new Player(grid, "A"), new Player(grid, "B"));
     }
 
     /**
@@ -46,7 +46,7 @@ public class Game {
     }
 
     public Grid getGrid() {
-        return grid;
+        return this.grid;
     }
 
     public Player getCurrPlayer() {
@@ -73,7 +73,7 @@ public class Game {
      *
      * @return {@code true} if all players have chosen god cards.
      */
-    public boolean finishChosenGodCards() {
+    public boolean finishChooseGodCards() {
         return this.playerCardMap.containsKey(this.playerA)
                 && this.playerCardMap.containsKey(this.playerB);
     }
@@ -84,7 +84,7 @@ public class Game {
      * @param player Player.
      * @param x God card's index.
      */
-    private void createGodCard(Player player, int x) {
+    private void createCardForPlayer(Player player, int x) {
         GodCard card;
         switch (x) {
             case NON_GOD:
@@ -101,29 +101,33 @@ public class Game {
                 break;
             default:
                 card = null;
-                System.out.println("No this god card.");
+                System.err.println("No this god card.");
+                return;
         }
-        player.addGodCard(card);
+        player.setGodCard(card);
         this.playerCardMap.put(player, card);
     }
 
     /**
-     * Chooses god cards for a game.
+     * Chooses god cards for two players.
+     * First player picks two god cards, the other player selects one of them.
      *
      * @param i God card's index.
      * @return This Game
      */
-    public Game chooseGodCards(int i) {
-        // first player picks two god cards, the other player selects one of them,
-        // first player picks starting player
+    public Game chooseGodCard(int i) {
+        if (this.finishChooseGodCards()) {
+            return this;
+        }
+
         if (this.chosenGodCards.size() == 0) {
             this.chosenGodCards.add(i);
             return this;
         }
 
         if (this.chosenGodCards.size() == 1) {
-            if (this.chosenGodCards.get(0) == i) {
-                System.out.println("This god card has been chosen!");
+            if (this.chosenGodCards.get(0) != 0 && this.chosenGodCards.get(0) == i) {
+                System.err.println("This god card has been chosen!");
                 return this;
             }
             this.chosenGodCards.add(i);
@@ -131,24 +135,23 @@ public class Game {
             return this;
         }
 
-        // first player has picked two god cards
-        // the other player selects one of them
-        // secondPlayerCard is i
+        // first player has picked two god cards, the other player selects one of them
+        int secondPlayerCard = i;
         int firstPlayerCard;
-        if (i == this.chosenGodCards.get(0)) {
+        if (this.chosenGodCards.get(0) == secondPlayerCard) {
             firstPlayerCard = this.chosenGodCards.get(1);
-        } else if (i == this.chosenGodCards.get(1)) {
+        } else if (this.chosenGodCards.get(1) == secondPlayerCard) {
             firstPlayerCard = this.chosenGodCards.get(0);
         } else {
             firstPlayerCard = -1;
-            System.out.println("Cannot choose this god card!");
+            System.err.println("Cannot choose this god card!");
+            return this;
         }
-        createGodCard(this.currPlayer, i);
+        createCardForPlayer(this.currPlayer, secondPlayerCard);
         changePlayer();
-        createGodCard(this.currPlayer, firstPlayerCard);
+        createCardForPlayer(this.currPlayer, firstPlayerCard);
         return this;
     }
-
 
     /**
      * Checks if all players' workers have initial positions.
@@ -166,19 +169,16 @@ public class Game {
      * @param x Row index of starting position.
      * @param y Column index of starting position.
      */
-    private void initWorkerPosition(int workerId, int x, int y) {
+    private void initAllWorkersPositions(int workerId, int x, int y) {
         if (this.currPlayer.getWorker(workerId).hasInitPosition()) {
+            System.err.println("Worker " + workerId + " for Player " + this.currPlayer.getPlayerId()
+                    + " already has starting position!");
             return;
         }
 
         this.currPlayer.initWorkerPosition(workerId, x, y);
-
         if (this.currPlayer.allWorkersInited()) {
-            if (this.currPlayer == this.playerA) {
-                this.currPlayer = this.playerB;
-            } else if (this.currPlayer == this.playerB) {
-                this.currPlayer = this.playerA;
-            }
+            changePlayer();
         }
     }
 
@@ -186,9 +186,9 @@ public class Game {
      * Changes turn to another player.
      */
     public void newTurn() {
-        if (this.currPlayer == this.playerA && !this.playerA.getGodCard().getMyTurn()) {
+        if (this.currPlayer == this.playerA && !this.currPlayer.getGodCard().getMyTurn()) {
             this.currPlayer = this.playerB;
-        } else if (this.currPlayer == this.playerB && !this.playerB.getGodCard().getMyTurn()) {
+        } else if (this.currPlayer == this.playerB && !this.currPlayer.getGodCard().getMyTurn()) {
             this.currPlayer = this.playerA;
         }
     }
@@ -202,7 +202,7 @@ public class Game {
      */
     public Game play(int x, int y) {
         if (!this.allWorkersInited()) {
-            initWorkerPosition(this.currWorker.getWorkerId(), x, y);
+            initAllWorkersPositions(this.currWorker.getWorkerId(), x, y);
             return this;
         }
 
@@ -214,14 +214,13 @@ public class Game {
         return this;
     }
 
-
     /**
      * Checks whether the current player wins the game.
      *
      * @return {@code true} if player has a worker on top of a level-3 tower.
      */
     public Player getWinner() {
-        if (!this.finishChosenGodCards() || !this.allWorkersInited()) {
+        if (!this.finishChooseGodCards() || !this.allWorkersInited()) {
             return null;
         }
 

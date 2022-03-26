@@ -30,9 +30,9 @@ public class Minotaur extends GodCard {
     private void moveTwoWorkers(Worker myWorker, Worker oppWorker, int prevX, int prevY,
                                int dstX, int dstY, int oppX, int oppY) {
         oppWorker.setPositionAndHeight(oppX, oppY, this.getGrid().getFieldHeight(oppX, oppY));
-        this.getGrid().updateGridAfterMove(oppWorker, dstX, dstY, oppX, oppY);
+        this.getGrid().updateGridAfterMove(oppWorker, dstX, dstY);
         myWorker.setPositionAndHeight(dstX, dstY, this.getGrid().getFieldHeight(dstX, dstY));
-        this.getGrid().updateGridAfterMove(myWorker, prevX, prevY, dstX, dstY);
+        this.getGrid().updateGridAfterMove(myWorker, prevX, prevY);
     }
 
     @Override
@@ -42,11 +42,11 @@ public class Minotaur extends GodCard {
         int prevY = moveWorker.getY();
         Point target = new Point(x, y);
 
-        // first check if target is an opponent worker's space, if it is and valid, change two workers'
-        // position; if not, do regular move
+        // First check if target is an opponent worker's space, if it is and valid, change two
+        // workers' positions; if not, do regular move.
         // get opponent workers' positions
-        Set<Point> allWorkersPos = this.getGrid().getAllWorkersPosition();
-        Set<Point> myWorkersPos = this.getPlayer().getAllWorkersPosition();
+        Set<Point> allWorkersPos = this.getGrid().getAllWorkersPositions();
+        Set<Point> myWorkersPos = this.getPlayer().getAllWorkersPositions();
         Set<Point> oppWorkersPos = new HashSet<>();
         for (Point p: allWorkersPos) {
             if (!myWorkersPos.contains(p)) {
@@ -88,7 +88,7 @@ public class Minotaur extends GodCard {
         Set<Point> movablePos = this.getGrid().getMovablePositions(x, y);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.getGrid().getFieldHeight(x, y));
-            this.getGrid().updateGridAfterMove(worker, prevX, prevY, x, y);
+            this.getGrid().updateGridAfterMove(worker, prevX, prevY);
             return true;
         } else {
             System.err.println("Target field[" + x + "][" + y + "] is not movable.");

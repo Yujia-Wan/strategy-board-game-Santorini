@@ -11,7 +11,7 @@ public class WorkerTest {
 
     @Before
     public void setUp() {
-        this.worker = new Worker(0);
+        this.worker = new Worker("A",0);
     }
 
     @Test

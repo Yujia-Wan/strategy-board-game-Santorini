@@ -15,6 +15,19 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <executable>java</executable>
+                    <arguments>
+                        <argument>-classpath</argument>
+                        <classpath/>
+                        <argument>edu.cmu.cs214.hw3.App</argument>
+                    </arguments>
+                </configuration>
+            </plugin>
             <!-- adding and configuring a plugin to collect coverage information during test execution -->
             <plugin>
                 <groupId>org.jacoco</groupId>
@@ -81,6 +94,12 @@
     </build>
 
     <dependencies>
+        <!-- https://mvnrepository.com/artifact/org.nanohttpd/nanohttpd -->
+        <dependency>
+            <groupId>org.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+            <version>2.3.0</version>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -98,7 +117,13 @@
             <artifactId>doxia-core</artifactId>
             <version>1.9.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.nanohttpd</groupId>
+            <artifactId>nanohttpd</artifactId>
+            <version>2.3.1</version>
+        </dependency>
     </dependencies>
+
     <reporting>
         <plugins>
             <!-- a plugin to include test results in the `mvn site` report -->
@@ -113,7 +138,6 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.7</version>
             </plugin>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>

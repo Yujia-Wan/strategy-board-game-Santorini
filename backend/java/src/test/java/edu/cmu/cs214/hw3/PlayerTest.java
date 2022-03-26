@@ -13,7 +13,7 @@ public class PlayerTest {
     @Before
     public void setUp() {
         this.grid = new Grid();
-        this.player = new Player("A", this.grid);
+        this.player = new Player(this.grid, "A");
     }
 
     @Test

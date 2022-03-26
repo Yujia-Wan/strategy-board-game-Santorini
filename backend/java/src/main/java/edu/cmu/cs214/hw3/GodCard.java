@@ -85,7 +85,7 @@ public abstract class GodCard {
         Point target = new Point(x, y);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.grid.getFieldHeight(x, y));
-            this.grid.updateGridAfterMove(worker, prevX, prevY, x, y);
+            this.grid.updateGridAfterMove(moveWorker, prevX, prevY);
             return true;
         } else {
             System.err.println("Target field[" + x + "][" + y + "] is not movable.");

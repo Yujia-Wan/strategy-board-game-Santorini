@@ -18,14 +18,14 @@ public class Grid {
      * Creates a new {@link Grid} instance.
      */
     public Grid() {
-        height = new int[ROW][COLUMN];
-        occupied = new boolean[ROW][COLUMN];
-        workerMap = new Worker[ROW][COLUMN];
+        this.height = new int[ROW][COLUMN];
+        this.occupied = new boolean[ROW][COLUMN];
+        this.workerMap = new Worker[ROW][COLUMN];
         for (int i = 0 ; i <ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
-                height[i][j] = 0;
-                occupied[i][j] = false;
-                workerMap[i][j] = null;
+                this.height[i][j] = 0;
+                this.occupied[i][j] = false;
+                this.workerMap[i][j] = null;
             }
         }
     }
@@ -42,26 +42,26 @@ public class Grid {
         return this.workerMap[x][y];
     }
 
-    public Set<Point> getAllWorkersPosition() {
-        Set<Point> workersPos = new HashSet<>();
+    public Set<Point> getAllWorkersPositions() {
+        Set<Point> positions = new HashSet<>();
         for (int i = 0; i < ROW; i++) {
             for (int j = 0; j < COLUMN; j++) {
-                if (workerMap[i][j] != null) {
-                    workersPos.add(new Point(i, j));
+                if (this.workerMap[i][j] != null) {
+                    positions.add(new Point(i, j));
                 }
             }
         }
-        return workersPos;
+        return positions;
     }
 
     /**
      * Updates field's status after initializing worker's starting position.
      *
      * @param worker Initialized worker.
-     * @param x X coordinate of worker's position.
-     * @param y Y coordinate of worker's position.
      */
-    public void updateAfterInitWorkerPos(Worker worker, int x, int y) {
+    public void updateAfterInitWorkerPos(Worker worker) {
+        int x = worker.getX();
+        int y = worker.getY();
         assert(0 <= x && x < ROW && 0 <= y && y < COLUMN && !this.occupied[x][y]);
 
         this.occupied[x][y] = true;
@@ -83,8 +83,7 @@ public class Grid {
             if (0 <= coordX && coordX < ROW && 0 <= coordY && coordY < COLUMN
                     && !this.occupied[coordX][coordY]
                     && (this.height[coordX][coordY] - this.height[x][y]) <= 1) {
-                Point point = new Point(coordX, coordY);
-                movable.add(point);
+                movable.add(new Point(coordX, coordY));
             }
         }
         return movable;
@@ -96,10 +95,10 @@ public class Grid {
      * @param worker Worker been moved.
      * @param prevX X coordinate of worker's previous position.
      * @param prevY Y coordinate of worker's previous position.
-     * @param currX X coordinate of worker's current position.
-     * @param currY Y coordinate of worker's current position.
      */
-    public void updateGridAfterMove(Worker worker, int prevX, int prevY, int currX, int currY) {
+    public void updateGridAfterMove(Worker worker, int prevX, int prevY) {
+        int currX = worker.getX();
+        int currY = worker.getY();
         this.occupied[prevX][prevY] = false;
         this.occupied[currX][currY] = true;
         this.workerMap[prevX][prevY] = null;
@@ -121,8 +120,7 @@ public class Grid {
             if (0 <= coordX && coordX < ROW && 0 <= coordY && coordY < COLUMN
                     && !this.occupied[coordX][coordY]
                     && this.height[coordX][coordY] < DOME_HEIGHT) {
-                Point point = new Point(coordX, coordY);
-                buildable.add(point);
+                buildable.add(new Point(coordX, coordY));
             }
         }
         return buildable;
@@ -137,9 +135,9 @@ public class Grid {
     public void buildTowerLevel(int x, int y) {
         assert(0 <= x && x < ROW && 0 <= y && y < COLUMN && !this.occupied[x][y]);
 
-        height[x][y] += 1;
-        if (height[x][y] == DOME_HEIGHT) {
-            occupied[x][y] = true;
+        this.height[x][y] += 1;
+        if (this.height[x][y] == DOME_HEIGHT) {
+            this.occupied[x][y] = true;
         }
     }
 }

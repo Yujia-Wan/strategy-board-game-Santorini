@@ -50,17 +50,19 @@ public class Demeter extends GodCard {
 
     @Override
     public void nextAction() {
-        if (this.getAction().equals(MOVE)) {
-            this.setAction(BUILD);
-            this.setMyTurn(true);
-        } else if (this.getAction().equals(BUILD)) {
-            this.setAction(SECOND_BUILD);
-            this.setMyTurn(true);
-        } else if (this.getAction().equals(SECOND_BUILD)) {
-            this.setAction(MOVE);
-            this.setMyTurn(false);
-            this.firstBuildX = -1;
-            this.firstBuildY = -1;
+        switch (this.getAction()) {
+            case MOVE -> {
+                this.setAction(BUILD);
+                this.setMyTurn(true);
+            }
+            case BUILD -> {
+                this.setAction(SECOND_BUILD);
+                this.setMyTurn(true);
+            }
+            case SECOND_BUILD -> {
+                this.setAction(MOVE);
+                this.setMyTurn(false);
+            }
         }
     }
 
@@ -99,9 +101,12 @@ public class Demeter extends GodCard {
             } else if (this.getAction().equals(SECOND_BUILD)) {
                 // skip the optional second build by clicking on the worker's current location
                 if ((x != worker.getX() || y != worker.getY())
-                        && !secondBuild(worker, x, y, this.firstBuildX, this.firstBuildY)) {
+                        && !this.secondBuild(worker, x, y, this.firstBuildX, this.firstBuildY)) {
                     return false;
                 }
+
+                this.firstBuildX = -1;
+                this.firstBuildY = -1;
             }
         }
         checkWin();

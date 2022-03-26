@@ -1,6 +1,7 @@
 package edu.cmu.cs214.hw3;
 
 public class Worker {
+    private final String playerId;
     private final int workerId;
     private int x;
     private int y;
@@ -9,9 +10,11 @@ public class Worker {
     /**
      * Creates a new {@link Worker} instance.
      *
-     * @param workerId The worker ID.
+     * @param playerId Player ID.
+     * @param workerId Worker ID.
      */
-    public Worker(int workerId) {
+    public Worker(String playerId, int workerId) {
+        this.playerId = playerId;
         this.workerId = workerId;
         this.x = -1;
         this.y = -1;
@@ -19,27 +22,36 @@ public class Worker {
     }
 
     /**
+     * Retrieves player's ID.
+     *
+     * @return Player ID.
+     */
+    public String getPlayerId() {
+        return this.playerId;
+    }
+
+    /**
      * Retrieves worker's ID.
      *
-     * @return Worker's ID.
+     * @return Worker ID.
      */
     public int getWorkerId() {
         return this.workerId;
     }
 
     /**
-     * Retrieves row index of worker's position.
+     * Retrieves x index of worker's position.
      *
-     * @return Row index.
+     * @return X index.
      */
     public int getX() {
         return this.x;
     }
 
     /**
-     * Retrieves column index of worker's position.
+     * Retrieves y index of worker's position.
      *
-     * @return Column index.
+     * @return Y index.
      */
     public int getY() {
         return this.y;
@@ -57,8 +69,8 @@ public class Worker {
     /**
      * Sets worker's position and height.
      *
-     * @param x Row index of position.
-     * @param y Column index of Position.
+     * @param x X index of position.
+     * @param y Y index of Position.
      * @param height Worker's height.
      */
     public void setPositionAndHeight(int x, int y, int height) {

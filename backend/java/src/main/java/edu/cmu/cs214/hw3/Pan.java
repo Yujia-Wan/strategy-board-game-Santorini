@@ -26,7 +26,7 @@ public class Pan extends GodCard {
         Point target = new Point(x, y);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.getGrid().getFieldHeight(x, y));
-            this.getGrid().updateGridAfterMove(worker, prevX, prevY, x, y);
+            this.getGrid().updateGridAfterMove(worker, prevX, prevY);
             this.moveDownHeight = prevHeight - moveWorker.getHeight();
             return true;
         } else {

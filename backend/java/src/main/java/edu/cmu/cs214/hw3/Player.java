@@ -12,26 +12,24 @@ public class Player {
     private static final int WORKER0 = 0;
     private static final int WORKER1 = 1;
     private final String playerId;
-    private Worker worker0;
-    private Worker worker1;
-    private Map<Integer, Worker> workerMap;
     private Grid grid;
+    private Map<Integer, Worker> workerMap;
     private GodCard godCard;
 
     /**
      * Creates a new {@link Player} instance.
      *
-     * @param playerId Player's ID.
      * @param grid Game grid.
+     * @param playerId Player's ID.
      */
-    public Player(String playerId, Grid grid) {
+    public Player(Grid grid, String playerId) {
         this.playerId = playerId;
-        this.worker0 = new Worker(WORKER0);
-        this.worker1 = new Worker(WORKER1);
-        this.workerMap = new HashMap<>();
-        workerMap.put(WORKER0, worker0);
-        workerMap.put(WORKER1, worker1);
         this.grid = grid;
+        Worker worker0 = new Worker(this.playerId, WORKER0);
+        Worker worker1 = new Worker(this.playerId, WORKER1);
+        this.workerMap = new HashMap<>();
+        this.workerMap.put(WORKER0, worker0);
+        this.workerMap.put(WORKER1, worker1);
         this.godCard = null;
     }
 
@@ -41,7 +39,7 @@ public class Player {
      * @return Player's ID.
      */
     public String getPlayerId() {
-        return playerId;
+        return this.playerId;
     }
 
     /**
@@ -51,10 +49,10 @@ public class Player {
      * @return The associated {@link edu.cmu.cs214.hw3.Worker}.
      */
     public Worker getWorker(int workerId) {
-        if (workerMap.containsKey(workerId)) {
-            return workerMap.get(workerId);
+        if (this.workerMap.containsKey(workerId)) {
+            return this.workerMap.get(workerId);
         } else {
-            System.err.println("Player " + playerId + " has no worker for this Worker ID.");
+            System.err.println("Player " + this.playerId + " doesn't have Worker " + workerId + ".");
             return null;
         }
     }
@@ -65,7 +63,7 @@ public class Player {
      * @return A list of workers.
      */
     public List<Worker> getAllWorkers() {
-        return new ArrayList<>(workerMap.values());
+        return new ArrayList<>(this.workerMap.values());
     }
 
     /**
@@ -74,7 +72,7 @@ public class Player {
      * @return {@code true} if all workers have initial positions.
      */
     public boolean allWorkersInited() {
-        for (Worker worker: this.getAllWorkers()) {
+        for (Worker worker: this.workerMap.values()) {
             if (!worker.hasInitPosition()) {
                 return false;
             }
@@ -93,16 +91,17 @@ public class Player {
         Worker worker = this.getWorker(workerId);
         if (!worker.hasInitPosition()) {
             worker.setPositionAndHeight(x, y, 0);
-            this.grid.updateAfterInitWorkerPos(worker, x, y);
+            this.grid.updateAfterInitWorkerPos(worker);
         } else {
-            System.err.println("This worker already has initial position!");
+            System.err.println("Worker " + workerId + " already has starting position!");
         }
     }
 
-    public Set<Point> getAllWorkersPosition() {
+    public Set<Point> getAllWorkersPositions() {
         Set<Point> positions = new HashSet<>();
-        positions.add(new Point(this.worker0.getX(), this.worker0.getY()));
-        positions.add(new Point(this.worker1.getX(), this.worker1.getY()));
+        for (Worker worker: this.workerMap.values()) {
+            positions.add(new Point(worker.getX(), worker.getY()));
+        }
         return positions;
     }
 
@@ -113,7 +112,7 @@ public class Player {
      */
     public boolean hasMovablePositions() {
         Set<Point> allMovable = new HashSet<>();
-        for (Worker w: this.getAllWorkers()) {
+        for (Worker w: this.workerMap.values()) {
             allMovable.addAll(this.grid.getMovablePositions(w.getX(), w.getY()));
         }
         return !allMovable.isEmpty();
@@ -126,13 +125,13 @@ public class Player {
      */
     public boolean hasBuildablePositions() {
         Set<Point> allBuildable = new HashSet<>();
-        for (Worker w: this.getAllWorkers()) {
+        for (Worker w: this.workerMap.values()) {
             allBuildable.addAll(this.grid.getBuildablePositions(w.getX(), w.getY()));
         }
         return !allBuildable.isEmpty();
     }
 
-    public void addGodCard(GodCard godCard) {
+    public void setGodCard(GodCard godCard) {
         this.godCard = godCard;
     }
 
