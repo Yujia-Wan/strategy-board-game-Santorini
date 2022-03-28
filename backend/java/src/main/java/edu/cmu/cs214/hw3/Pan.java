@@ -4,16 +4,19 @@ import java.awt.Point;
 import java.util.List;
 import java.util.Set;
 
-/**
- * Pan: You also win if your Worker moves down two or more levels.
- */
 public class Pan extends GodCard {
+    private static final String POWER = "Pan: You also win if your Worker moves down two or more levels.";
     private static final int ALSO_WIN_HEIGHT = 2;
     private int moveDownHeight;
 
     public Pan(Grid grid, Player player) {
         super(grid, player);
         this.moveDownHeight = -1;
+    }
+
+    @Override
+    public String getPower() {
+        return POWER;
     }
 
     @Override

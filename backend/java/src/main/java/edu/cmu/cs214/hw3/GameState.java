@@ -1,68 +1,208 @@
 package edu.cmu.cs214.hw3;
 
+import java.awt.Point;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class GameState {
     private static final int ROW = 5;
     private static final int COLUMN = 5;
+    private static final int FIELD = 25;
+    private static final int EMPTY = 0;
+    private static final int ONE_LEVEL = 1;
+    private static final int TWO_LEVEL = 2;
+    private static final int THREE_LEVEL = 3;
+    private static final int DOME = 4;
+    private static final int CARD_NUMBER = 4;
+    private final boolean finishChooseCard;
+    private final int playerACard;
+    private final int playerBCard;
+    private final Card[] cards;
+    private final Player currPlayer;
+    private final int currWorker;
+    private final boolean finishInitPos;
+    private final String action;
+    private final String winner;
     private final Cell[] cells;
-    private final Player winner;
-    private final String turn;
 
-    public GameState(Cell[] cells, Player winner, String turn) {
-        this.cells = cells;
+    public GameState(boolean finishChooseCard, int playerACard, int playerBCard, Card[] cards, Player currPlayer,
+                     int currWorker, boolean finishInitPos, String action, String winner, Cell[] cells) {
+        this.finishChooseCard = finishChooseCard;
+        this.playerACard = playerACard;
+        this.playerBCard = playerBCard;
+        this.cards = cards;
+        this.currPlayer = currPlayer;
+        this.currWorker = currWorker;
+        this.finishInitPos = finishInitPos;
+        this.action = action;
         this.winner = winner;
-        this.turn = turn;
+        this.cells = cells;
     }
 
     public static GameState forGame(Game game) {
+        boolean finishChooseCard = getFinishChooseCard(game);
+        int playerACard = getPlayerACard(game);
+        int playerBCard = getPlayerBCard(game);
+        Card[] cards = getCards(game);
+        Player currPlayer = getCurrPlayer(game);
+        System.out.println("GameState: forgame: currPlayer: " + currPlayer.getPlayerId());
+        int currWorker = getCurrWorker(game);
+        boolean finishInitPos = getFinishInitPos(game);
+        String action = getAction(game);
+        String winner = getWinner(game);
         Cell[] cells = getCells(game);
-        Player winner = getWinner(game);
-        String turn = getTurn(game);
-        return new GameState(cells, winner, turn);
+        return new GameState(finishChooseCard, playerACard, playerBCard, cards, currPlayer, currWorker, finishInitPos, action, winner, cells);
     }
 
     @Override
     public String toString() {
         if (this.winner == null) {
-            return "{ \"cells\": " + Arrays.toString(this.cells) + "," +
-                    "\"turn\": " + this.turn + "}";
+            return "{ \"finishchoosecard\": " + this.finishChooseCard + "," +
+                    "\"playeracard\": " + this.playerACard + "," +
+                    "\"playerbcard\": " + this.playerBCard + "," +
+                    "\"cards\": " + Arrays.toString(this.cards) + "," +
+                    "\"currplayer\": \"" + this.currPlayer.getPlayerId() + "\"," +
+                    "\"currworker\": \"" + this.currWorker + "\"," +
+                    "\"finishinitpos\": " + this.finishInitPos + "," +
+                    "\"action\": \"" + this.action + "\"," +
+                    "\"cells\": " + Arrays.toString(this.cells) + "}";
         }
-        return "{ \"cells\": " + Arrays.toString(this.cells) + "," +
-                "\"turn\": " + this.turn + "," +
-                "\"winner\": " + this.winner.getPlayerId() + "}";
+        return "{ \"finishchoosecard\": " + this.finishChooseCard + "," +
+                "\"playeracard\": " + this.playerACard + "," +
+                "\"playerbcard\": " + this.playerBCard + "," +
+                "\"cards\": " + Arrays.toString(this.cards) + "," +
+                "\"currplayer\": \"" + this.currPlayer.getPlayerId() + "\"," +
+                "\"currworker\": \"" + this.currWorker + "\"," +
+                "\"finishinitpos\": " + this.finishInitPos + "," +
+                "\"action\": \"" + this.action + "\"," +
+                "\"winner\": \"" + this.winner + "\"," +
+                "\"cells\": " + Arrays.toString(this.cells) + "}";
+    }
+
+    public static boolean getFinishChooseCard(Game game) {
+        return game.finishChooseGodCards();
+    }
+
+    public static int getPlayerACard(Game game) {
+        Map<String, Integer> map = game.getPlayerIdCardIndexMap();
+        if (map.containsKey("A")) {
+            return map.get("A");
+        }
+        return -1;
+    }
+
+    public static int getPlayerBCard(Game game) {
+        Map<String, Integer> map = game.getPlayerIdCardIndexMap();
+        if (map.containsKey("B")) {
+            return map.get("B");
+        }
+        return -1;
+    }
+
+    public static Card[] getCards(Game game) {
+        Card[] cards = new Card[CARD_NUMBER];
+        Map<Integer, String> cardPowerMap = game.getCardPowerMap();
+        for (int i = 0; i < CARD_NUMBER; i++) {
+            String text = cardPowerMap.get(i);
+            String clazz = "";
+            String link = "";
+            if (!game.finishChooseGodCards() && (!game.getChosenGodCards().contains(i) || i==0)) {
+                clazz = "playable";
+                link = "/choosegodcard?i=" + i;
+            } else {
+                clazz = "occupied";
+            }
+            cards[i] = new Card(text, clazz, link);
+        }
+        return cards;
+    }
+
+    public static Player getCurrPlayer(Game game) {
+        return game.getCurrPlayer();
+    }
+
+    public static int getCurrWorker(Game game) {
+        return game.getCurrWorker().getWorkerId();
+    }
+
+    public static boolean getFinishInitPos(Game game) {
+        return game.allWorkersInited();
+    }
+
+    public static String getAction(Game game) {
+        if (!game.finishChooseGodCards() || !game.allWorkersInited()) {
+            return "";
+        }
+        return game.getCurrPlayer().getGodCard().getAction();
+    }
+
+    public static String getWinner(Game game) {
+        if (game.getWinner() == null) {
+            return null;
+        }
+        return game.getWinner().getPlayerId();
     }
 
     public static Cell[] getCells(Game game) {
-        Cell cells[] = new Cell[25];
+        Cell[] cells = new Cell[FIELD];
         Grid grid = game.getGrid();
-        for (int x = 0; x <= ROW; x++) {
-            for (int y = 0; y <= COLUMN; y++) {
+        for (int x = 0; x < ROW; x++) {
+            for (int y = 0; y < COLUMN; y++) {
                 String text = "";
                 String clazz = "";
-                String link = "";
-                if (grid.getFieldHeight(x, y) == 0) {
-
-                } else if (grid.getFieldHeight(x, y) == 1) {
-
-                } else if (grid.getFieldHeight(x, y) == 2) {
-
-                } else if (grid.getFieldHeight(x, y) == 3) {
-
-                } else if (grid.getFieldHeight(x, y) == 4) {
-
+                String link = "play?x=" + x + "&y=" + y;
+                if (!game.finishChooseGodCards()) {
+                    clazz = "occupied";
+                    link = "";
+                } else {
+                    if (grid.getFieldHeight(x, y) == EMPTY) {
+                        text = "";
+                        clazz = "playable";
+                    } else if (grid.getFieldHeight(x, y) == ONE_LEVEL) {
+                        text = "[]";
+                        clazz = "playable";
+                    } else if (grid.getFieldHeight(x, y) == TWO_LEVEL) {
+                        text = "[[]]";
+                        clazz = "playable";
+                    } else if (grid.getFieldHeight(x, y) == THREE_LEVEL) {
+                        text = "[[[]]]";
+                        clazz = "playable";
+                    } else if (grid.getFieldHeight(x, y) == DOME) {
+                        text = "[[[O]]]";
+                        clazz = "occupied";
+                        link = "";
+                    }
+                    if (grid.getFieldWorker(x, y) != null) {
+                        Worker worker = grid.getFieldWorker(x, y);
+                        if (grid.getFieldHeight(x, y) == EMPTY) {
+                            text = worker.getPlayerId() + worker.getWorkerId();
+                        } else if (grid.getFieldHeight(x, y) == ONE_LEVEL) {
+                            text = "[" + worker.getPlayerId() + worker.getWorkerId() + "]";
+                        } else if (grid.getFieldHeight(x, y) == TWO_LEVEL) {
+                            text = "[[" + worker.getPlayerId() + worker.getWorkerId() + "]]";
+                        } else if (grid.getFieldHeight(x, y) == THREE_LEVEL) {
+                            text = "[[[" + worker.getPlayerId() + worker.getWorkerId() + "]]]";
+                        }
+                        clazz = "occupied";
+                        link = "";
+                    }
+                    if (game.finishChooseGodCards() && game.allWorkersInited()) {
+                        Player currPlayer = game.getCurrPlayer();
+                        Worker currWorker = game.getCurrWorker();
+                        GodCard godCard = currPlayer.getGodCard();
+                        Set<Point> validPos = godCard.getValidPositions(currWorker);
+                        if (validPos.contains(new Point(x, y))) {
+                            clazz = "valid";
+                        }
+                    }
                 }
+                cells[ROW * y + x] = new Cell(text, clazz, link);
             }
         }
-        return null;
-    }
-
-    public static Player getWinner(Game game) {
-        return game.getWinner();
-    }
-
-    public static String getTurn(Game game) {
-        return game.getCurrPlayer().getPlayerId();
+        return cells;
     }
 }
 
@@ -72,6 +212,37 @@ class Cell {
     private final String link;
 
     Cell(String text, String clazz, String link) {
+        this.text = text;
+        this.clazz = clazz;
+        this.link = link;
+    }
+
+    public String getText() {
+        return this.text;
+    }
+
+    public String getClazz() {
+        return this.clazz;
+    }
+
+    public String getLink() {
+        return this.link;
+    }
+
+    @Override
+    public String toString() {
+        return "{ \"text\": \"" + this.text + "\"," +
+                " \"clazz\": \"" + this.clazz + "\"," +
+                " \"link\": \"" + this.link + "\"}";
+    }
+}
+
+class Card {
+    private final String text;
+    private final String clazz;
+    private final String link;
+
+    Card(String text, String clazz, String link) {
         this.text = text;
         this.clazz = clazz;
         this.link = link;

@@ -29,6 +29,8 @@ public abstract class GodCard {
         this.movedWorkerId = -1;
     }
 
+    public abstract String getPower();
+
     public Grid getGrid() {
         return this.grid;
     }
@@ -183,5 +185,14 @@ public abstract class GodCard {
         checkWin();
         nextAction();
         return true;
+    }
+
+    public Set<Point> getValidPositions(Worker worker) {
+        if (this.action.equals(MOVE)) {
+            return this.grid.getMovablePositions(worker.getX(), worker.getY());
+        } else if (this.action.equals((BUILD))) {
+            return this.grid.getBuildablePositions(worker.getX(), worker.getY());
+        }
+        return null;
     }
 }

@@ -55,6 +55,7 @@ public class GridTest {
 
     @Test
     public void testUpdateGridAfterMove() {
+        worker.setPositionAndHeight(1, 2, 0);
         grid.updateGridAfterMove(worker,0, 1);
         assertFalse(grid.isOccupied(0, 1));
         assertTrue(grid.isOccupied(1, 2));

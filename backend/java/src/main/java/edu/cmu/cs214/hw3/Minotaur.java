@@ -4,14 +4,17 @@ import java.awt.Point;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Minotaur: Your worker may move into an opponent Worker's space, if their Worker can
- * be forced one space straight backwards to an unoccupied space at any level.
- */
 public class Minotaur extends GodCard {
+    private static final String POWER = "Minotaur: Your worker may move into an opponent Worker's space, if their " +
+            "Worker can be forced one space straight backwards to an unoccupied space at any level.";
 
     public Minotaur(Grid grid, Player player) {
         super(grid, player);
+    }
+
+    @Override
+    public String getPower() {
+        return POWER;
     }
 
     /**

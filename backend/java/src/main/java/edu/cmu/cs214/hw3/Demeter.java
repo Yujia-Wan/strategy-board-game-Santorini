@@ -1,15 +1,14 @@
 package edu.cmu.cs214.hw3;
 
 import java.awt.Point;
+import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Demeter: Your worker may build one additional time, but not on the same space.
- * Create a "pass" button or click on the worker's current location, indicating that
- * the player wants to skip the optional second build.
- */
 public class Demeter extends GodCard {
-    private static final String SECOND_BUILD = "secondBuild";
+    // Create a "pass" button or click on the worker's current location, indicating that
+    // the player wants to skip the optional second build.
+    private static final String POWER = "Demeter: Your worker may build one additional time, but not on the same space.";
+    private static final String SECOND_BUILD = "second build";
     private int firstBuildX;
     private int firstBuildY;
 
@@ -17,6 +16,11 @@ public class Demeter extends GodCard {
         super(grid, player);
         this.firstBuildX = -1;
         this.firstBuildY = -1;
+    }
+
+    @Override
+    public String getPower() {
+        return POWER;
     }
 
     /**
@@ -62,6 +66,8 @@ public class Demeter extends GodCard {
             case SECOND_BUILD -> {
                 this.setAction(MOVE);
                 this.setMyTurn(false);
+            }
+            default -> {
             }
         }
     }
@@ -112,5 +118,19 @@ public class Demeter extends GodCard {
         checkWin();
         nextAction();
         return true;
+    }
+
+    @Override
+    public Set<Point> getValidPositions(Worker worker) {
+        if (this.getAction().equals(MOVE)) {
+            return this.getGrid().getMovablePositions(worker.getX(), worker.getY());
+        } else if (this.getAction().equals((BUILD))) {
+            return this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
+        } else if (this.getAction().equals((SECOND_BUILD))) {
+            Set<Point> secondBuildablePos = this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
+            secondBuildablePos.remove(new Point(firstBuildX, firstBuildY));
+            return secondBuildablePos;
+        }
+        return null;
     }
 }

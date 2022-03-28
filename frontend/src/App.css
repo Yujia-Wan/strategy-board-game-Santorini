@@ -1,0 +1,114 @@
+#handlebars {
+    visibility: hidden;
+    display: none;
+}
+
+#toprow {
+    width: 100%;
+    height: 13.5vmin;
+    padding: 0px;
+    margin: 0px;
+}
+
+#instructions {
+    float: left;
+    width: 56vmin;
+    height: 10.5vmin;
+    background-color: #b3d3f3;
+    padding-top: 3vmin;
+    margin: 0px;
+    text-align: center;
+    font-size: 16px;
+}
+
+#topbar {
+    float: left;
+    width: 14vmin;
+    height: 13.5vmin;
+}
+
+#topbar button {
+    width: 100%;
+    height: 6.75vmin;
+    margin: 0;
+    padding: 0;
+    position: static;
+    font-size: 17px;
+    background-color: #FFFFFF;
+    border: 1px solid #8dc0f3;
+}
+
+#workerbar {
+    background-color: #FFFFFF;
+    width: 100%;
+    height: 5vmin;
+}
+
+#workerbar button {
+    width: 34vmin;
+    height: 5vmin;
+    margin: 0;
+    padding: 0;
+    font-size: 17px;
+    background-color: #FFFFFF;
+    border: 1px solid #8dc0f3;
+    margin-left: 0.4vmin;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: 14vmin 14vmin 14vmin 14vmin 14vmin;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+.cell {
+    background-color: #FFFFFF;
+    padding: 0px;
+    margin: 0px;
+    font-size: 30px;
+    height: 14vmin;
+    text-align: center;
+    border: 1px solid #8dc0f3;
+}
+
+#playerbar {
+    float: left;
+    width: 70vmin;
+    font-size: 16px;
+    height: 10vmin;
+    padding-top: 2vmin;
+    margin: 0px;
+    text-align: center;
+    background-color: #b3d3f3;
+}
+
+#cardboard {
+    display: grid;
+    grid-template-columns: 17.5vmin 17.5vmin 17.5vmin 17.5vmin;
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+.card {
+    background-color: #FFFFFF;
+    padding: 0px;
+    margin: 0px;
+    font-size: 16px;
+    height: 17.5vmin;
+    text-align: center;
+    border: 1px solid #8dc0f3;
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+.playable { background-color: #FFFFFF; }
+.occupied { background-color: #d3d0d0; }
+.valid { background-color: #8dc0f3; }

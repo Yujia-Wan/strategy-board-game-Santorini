@@ -10,6 +10,13 @@ public class Game {
     private static final int DEMETER = 1;
     private static final int MINOTAUR = 2;
     private static final int PAN = 3;
+    private static final int CARD_NUMBER = 4;
+    private static final String[] POWERS = {"NonGod: Play without god card.",
+            "Demeter: Your worker may build one additional time, but not on the same space.",
+            "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " +
+                    "be forced one space straight backwards to an unoccupied space at any level.",
+            "Pan: You also win if your Worker moves down two or more levels."};
+//    private static final String[] POWERS = {"NonGod", "Demeter", "Minotaur", "Pan"};
     private final Grid grid;
     private final Player playerA;
     private final Player playerB;
@@ -18,6 +25,7 @@ public class Game {
     private Worker currWorker;
     private List<Integer> chosenGodCards;
     private Map<Player, GodCard> playerCardMap;
+    private Map<String, Integer> playerIdCardIndexMap;
 
     public Game() {
         this(new Grid());
@@ -40,9 +48,10 @@ public class Game {
         this.playerB = playerB;
         this.winner = null;
         this.currPlayer = playerA;
-        this.currWorker = null;
+        this.currWorker = playerA.getWorker(0);
         this.chosenGodCards = new ArrayList<>();
         this.playerCardMap = new HashMap<>();
+        this.playerIdCardIndexMap = new HashMap<>();
     }
 
     public Grid getGrid() {
@@ -55,6 +64,14 @@ public class Game {
 
     public Worker getCurrWorker() {
         return this.currWorker;
+    }
+
+    public List<Integer> getChosenGodCards() {
+        return this.chosenGodCards;
+    }
+
+    public Map<String, Integer> getPlayerIdCardIndexMap() {
+        return this.playerIdCardIndexMap;
     }
 
     /**
@@ -106,6 +123,7 @@ public class Game {
         }
         player.setGodCard(card);
         this.playerCardMap.put(player, card);
+        this.playerIdCardIndexMap.put(player.getPlayerId(), x);
     }
 
     /**
@@ -120,37 +138,41 @@ public class Game {
             return this;
         }
 
-        if (this.chosenGodCards.size() == 0) {
-            this.chosenGodCards.add(i);
-            return this;
-        }
-
-        if (this.chosenGodCards.size() == 1) {
-            if (this.chosenGodCards.get(0) != 0 && this.chosenGodCards.get(0) == i) {
-                System.err.println("This god card has been chosen!");
-                return this;
-            }
-            this.chosenGodCards.add(i);
-            changePlayer();
-            return this;
-        }
-
-        // first player has picked two god cards, the other player selects one of them
-        int secondPlayerCard = i;
-        int firstPlayerCard;
-        if (this.chosenGodCards.get(0) == secondPlayerCard) {
-            firstPlayerCard = this.chosenGodCards.get(1);
-        } else if (this.chosenGodCards.get(1) == secondPlayerCard) {
-            firstPlayerCard = this.chosenGodCards.get(0);
-        } else {
-            firstPlayerCard = -1;
-            System.err.println("Cannot choose this god card!");
-            return this;
-        }
-        createCardForPlayer(this.currPlayer, secondPlayerCard);
-        changePlayer();
-        createCardForPlayer(this.currPlayer, firstPlayerCard);
+        this.chosenGodCards.add(i);
+        this.createCardForPlayer(this.currPlayer, i);
+        this.changePlayer();
         return this;
+//        if (this.chosenGodCards.size() == 0) {
+//            this.chosenGodCards.add(i);
+//            return this;
+//        }
+//
+//        if (this.chosenGodCards.size() == 1) {
+//            if (this.chosenGodCards.get(0) != 0 && this.chosenGodCards.get(0) == i) {
+//                System.err.println("This god card has been chosen!");
+//                return this;
+//            }
+//            this.chosenGodCards.add(i);
+//            changePlayer();
+//            return this;
+//        }
+//
+//        // first player has picked two god cards, the other player selects one of them
+//        int secondPlayerCard = i;
+//        int firstPlayerCard;
+//        if (this.chosenGodCards.get(0) == secondPlayerCard) {
+//            firstPlayerCard = this.chosenGodCards.get(1);
+//        } else if (this.chosenGodCards.get(1) == secondPlayerCard) {
+//            firstPlayerCard = this.chosenGodCards.get(0);
+//        } else {
+//            firstPlayerCard = -1;
+//            System.err.println("Cannot choose this god card!");
+//            return this;
+//        }
+//        createCardForPlayer(this.currPlayer, secondPlayerCard);
+//        changePlayer();
+//        createCardForPlayer(this.currPlayer, firstPlayerCard);
+//        return this;
     }
 
     /**
@@ -158,7 +180,7 @@ public class Game {
      *
      * @return {@code true} if all players' workers have initial positions.
      */
-    private boolean allWorkersInited() {
+    public boolean allWorkersInited() {
         return this.playerA.allWorkersInited() && this.playerB.allWorkersInited();
     }
 
@@ -214,6 +236,11 @@ public class Game {
         return this;
     }
 
+    public Game setCurrWorker(int workerId) {
+        this.currWorker = this.currPlayer.getWorker(workerId);
+        return this;
+    }
+
     /**
      * Checks whether the current player wins the game.
      *
@@ -235,5 +262,13 @@ public class Game {
             }
         }
         return this.winner;
+    }
+
+    public Map<Integer, String> getCardPowerMap() {
+        Map<Integer, String> cardPowerMap = new HashMap<>();
+        for (int i = 0; i < CARD_NUMBER; i++) {
+            cardPowerMap.put(i, POWERS[i]);
+        }
+        return new HashMap<>(cardPowerMap);
     }
 }

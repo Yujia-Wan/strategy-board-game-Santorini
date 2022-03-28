@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <title>Santorini</title>
+  </head>
+  <body>
+    <div id="root">
+    </div>
+    <div id="handlebars">
+      <div id="toprow">
+        <div id="instructions">
+          {{instructions}}
+        </div>
+        <div id="topbar">
+          <a href="/newgame"><button>New Game</button></a>
+          <a href="/undo"><button>Undo</button></a>
+        </div>
+      </div>
+      
+      <div id="workerbar">
+        <a href="/selectworker?i=0"><button>Worker 0</button></a>
+        <a href="/selectworker?i=1"><button>Worker 1</button></a>
+      </div>
+      
+      <div id="board">
+        {{#each cells}}
+          {{#if link}}
+            <a href={{link}}><div class="cell {{clazz}}">{{text}}</div></a>
+          {{else}}
+            <div class="cell {{clazz}}">{{text}}</div>
+          {{/if}}
+        {{/each}}
+      </div>
+
+      <div id="playerbar">
+        {{playerbar}}
+      </div>
+      
+      <div id="cardboard">
+        {{#each cards}}
+          {{#if link}}
+            <a href={{link}}><div class="card {{clazz}}">{{text}}</div></a>
+          {{else}}
+            <div class="card {{clazz}}">{{text}}</div>
+          {{/if}}
+        {{/each}}
+      </div>
+    </div>
+  </body>
+</html>
