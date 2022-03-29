@@ -13,12 +13,12 @@
 #instructions {
     float: left;
     width: 56vmin;
-    height: 10.5vmin;
+    height: 13.5vmin;
     background-color: #b3d3f3;
-    padding-top: 3vmin;
     margin: 0px;
     text-align: center;
     font-size: 16px;
+    white-space: pre-line;
 }
 
 #topbar {
@@ -71,17 +71,19 @@
     height: 14vmin;
     text-align: center;
     border: 1px solid #8dc0f3;
+    font-size: 20px;
+    line-height: 14vmin;
 }
 
 #playerbar {
     float: left;
-    width: 70vmin;
+    width: 64vmin;
+    padding: 0 3vmin;
     font-size: 16px;
-    height: 10vmin;
-    padding-top: 2vmin;
+    height: 21vmin;
     margin: 0px;
-    text-align: center;
     background-color: #b3d3f3;
+    white-space: pre-line;
 }
 
 #cardboard {
@@ -97,8 +99,9 @@
     padding: 0px;
     margin: 0px;
     font-size: 16px;
-    height: 17.5vmin;
+    height: 26vmin;
     text-align: center;
+    padding: 2vmin 0px;
     border: 1px solid #8dc0f3;
 }
 
@@ -110,5 +113,5 @@ body {
 }
 
 .playable { background-color: #FFFFFF; }
-.occupied { background-color: #d3d0d0; }
-.valid { background-color: #8dc0f3; }
+.occupied { background-color: #e6e6e6; }
+.valid { background-color: #f8d9cc; }

@@ -1,13 +1,14 @@
 package edu.cmu.cs214.hw3;
 
 import java.awt.Point;
-import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Demeter: Your worker may build one additional time, but not on the same space.
+ * Create a "pass" button or click on the worker's current location, indicating that
+ * the player wants to skip the optional second build.
+ */
 public class Demeter extends GodCard {
-    // Create a "pass" button or click on the worker's current location, indicating that
-    // the player wants to skip the optional second build.
-    private static final String POWER = "Demeter: Your worker may build one additional time, but not on the same space.";
     private static final String SECOND_BUILD = "second build";
     private int firstBuildX;
     private int firstBuildY;
@@ -16,11 +17,6 @@ public class Demeter extends GodCard {
         super(grid, player);
         this.firstBuildX = -1;
         this.firstBuildY = -1;
-    }
-
-    @Override
-    public String getPower() {
-        return POWER;
     }
 
     /**

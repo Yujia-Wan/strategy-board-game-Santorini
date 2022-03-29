@@ -16,7 +16,6 @@ public class Game {
             "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " +
                     "be forced one space straight backwards to an unoccupied space at any level.",
             "Pan: You also win if your Worker moves down two or more levels."};
-//    private static final String[] POWERS = {"NonGod", "Demeter", "Minotaur", "Pan"};
     private final Grid grid;
     private final Player playerA;
     private final Player playerB;
@@ -74,14 +73,24 @@ public class Game {
         return this.playerIdCardIndexMap;
     }
 
+    public Map<Integer, String> getCardPowerMap() {
+        Map<Integer, String> cardPowerMap = new HashMap<>();
+        for (int i = 0; i < CARD_NUMBER; i++) {
+            cardPowerMap.put(i, POWERS[i]);
+        }
+        return new HashMap<>(cardPowerMap);
+    }
+
     /**
      * Changes current player.
      */
     private void changePlayer() {
         if (this.currPlayer == this.playerA) {
             this.currPlayer = this.playerB;
+            this.currWorker = this.currPlayer.getWorker(0);
         } else if (this.currPlayer == this.playerB) {
             this.currPlayer = this.playerA;
+            this.currWorker = this.currPlayer.getWorker(0);
         }
     }
 
@@ -117,8 +126,7 @@ public class Game {
                 card = new Pan(this.grid, player);
                 break;
             default:
-                card = null;
-                System.err.println("No this god card.");
+                System.err.println("No this god card!");
                 return;
         }
         player.setGodCard(card);
@@ -138,41 +146,26 @@ public class Game {
             return this;
         }
 
+        if (this.chosenGodCards.contains(i) && i != 0) {
+            System.err.println("This god card has been chosen!");
+            return this;
+        }
+
         this.chosenGodCards.add(i);
         this.createCardForPlayer(this.currPlayer, i);
         this.changePlayer();
         return this;
-//        if (this.chosenGodCards.size() == 0) {
-//            this.chosenGodCards.add(i);
-//            return this;
-//        }
-//
-//        if (this.chosenGodCards.size() == 1) {
-//            if (this.chosenGodCards.get(0) != 0 && this.chosenGodCards.get(0) == i) {
-//                System.err.println("This god card has been chosen!");
-//                return this;
-//            }
-//            this.chosenGodCards.add(i);
-//            changePlayer();
-//            return this;
-//        }
-//
-//        // first player has picked two god cards, the other player selects one of them
-//        int secondPlayerCard = i;
-//        int firstPlayerCard;
-//        if (this.chosenGodCards.get(0) == secondPlayerCard) {
-//            firstPlayerCard = this.chosenGodCards.get(1);
-//        } else if (this.chosenGodCards.get(1) == secondPlayerCard) {
-//            firstPlayerCard = this.chosenGodCards.get(0);
-//        } else {
-//            firstPlayerCard = -1;
-//            System.err.println("Cannot choose this god card!");
-//            return this;
-//        }
-//        createCardForPlayer(this.currPlayer, secondPlayerCard);
-//        changePlayer();
-//        createCardForPlayer(this.currPlayer, firstPlayerCard);
-//        return this;
+    }
+
+    /**
+     * Selects worker of current player.
+     *
+     * @param workerId Worker ID.
+     * @return This game.
+     */
+    public Game selectWorker(int workerId) {
+        this.currWorker = this.currPlayer.getWorker(workerId);
+        return this;
     }
 
     /**
@@ -199,46 +192,14 @@ public class Game {
         }
 
         this.currPlayer.initWorkerPosition(workerId, x, y);
+        if (workerId == 0) {
+            this.currWorker = this.currPlayer.getWorker(1);
+        } else if (workerId == 1) {
+            this.currWorker = this.currPlayer.getWorker(0);
+        }
         if (this.currPlayer.allWorkersInited()) {
             changePlayer();
         }
-    }
-
-    /**
-     * Changes turn to another player.
-     */
-    public void newTurn() {
-        if (this.currPlayer == this.playerA && !this.currPlayer.getGodCard().getMyTurn()) {
-            this.currPlayer = this.playerB;
-        } else if (this.currPlayer == this.playerB && !this.currPlayer.getGodCard().getMyTurn()) {
-            this.currPlayer = this.playerA;
-        }
-    }
-
-    /**
-     * Each player takes turns to play the game.
-     *
-     * @param x X coordinate of target position.
-     * @param y Y coordinate of target position.
-     * @return This game.
-     */
-    public Game play(int x, int y) {
-        if (!this.allWorkersInited()) {
-            initAllWorkersPositions(this.currWorker.getWorkerId(), x, y);
-            return this;
-        }
-
-        if (!this.currPlayer.getGodCard().execute(this.currWorker, x, y)) {
-            return this;
-        }
-
-        newTurn();
-        return this;
-    }
-
-    public Game setCurrWorker(int workerId) {
-        this.currWorker = this.currPlayer.getWorker(workerId);
-        return this;
     }
 
     /**
@@ -264,11 +225,41 @@ public class Game {
         return this.winner;
     }
 
-    public Map<Integer, String> getCardPowerMap() {
-        Map<Integer, String> cardPowerMap = new HashMap<>();
-        for (int i = 0; i < CARD_NUMBER; i++) {
-            cardPowerMap.put(i, POWERS[i]);
+    /**
+     * Changes turn to another player.
+     */
+    public void newTurn() {
+        if (this.currPlayer == this.playerA && !this.currPlayer.getGodCard().getMyTurn()) {
+            this.currPlayer = this.playerB;
+            this.currWorker = this.currPlayer.getWorker(0);
+        } else if (this.currPlayer == this.playerB && !this.currPlayer.getGodCard().getMyTurn()) {
+            this.currPlayer = this.playerA;
+            this.currWorker = this.currPlayer.getWorker(0);
         }
-        return new HashMap<>(cardPowerMap);
+    }
+
+    /**
+     * Each player takes turns to play the game.
+     *
+     * @param x X coordinate of target position.
+     * @param y Y coordinate of target position.
+     * @return This game.
+     */
+    public Game play(int x, int y) {
+        if (!this.allWorkersInited()) {
+            initAllWorkersPositions(this.currWorker.getWorkerId(), x, y);
+            return this;
+        }
+
+        if (!this.currPlayer.getGodCard().execute(this.currWorker, x, y)) {
+            return this;
+        }
+
+        if (this.getWinner() != null) {
+            return this;
+        }
+
+        newTurn();
+        return this;
     }
 }

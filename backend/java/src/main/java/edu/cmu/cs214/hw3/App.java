@@ -32,29 +32,23 @@ public class App extends NanoHTTPD {
         String uri = session.getUri();
         Map<String, List<String>> params = session.getParameters();
         switch (uri) {
-            case "/newgame":
-                System.out.println("App: new game");
+            case "/newgame" -> {
                 this.game = new Game();
-                break;
-            case "/choosegodcard":
-                System.out.println("App: choose god card");
+            }
+            case "/choosegodcard" -> {
                 this.game = this.game.chooseGodCard(Integer.parseInt(params.get("i").get(0)));
-                System.out.println("A: " + this.game.getPlayerIdCardIndexMap().get("A"));
-                System.out.println("B: " + this.game.getPlayerIdCardIndexMap().get("B"));
-                break;
-            case "/selectworker":
-                System.out.println("App: select worker");
-                this.game = this.game.setCurrWorker(Integer.parseInt(params.get("i").get(0)));
-                break;
-            case "/play":
-                System.out.println("App: play");
+            }
+            case "/selectworker" -> {
+                this.game = this.game.selectWorker(Integer.parseInt(params.get("i").get(0)));
+            }
+            case "/play" -> {
                 this.game = this.game.play(Integer.parseInt(params.get("x").get(0)), Integer.parseInt(params.get("y").get(0)));
-                break;
-            default:
+            }
+            default -> {
+            }
         }
 
         GameState gamePlay = GameState.forGame(game);
-        System.out.println(gamePlay.toString());
         return newFixedLengthResponse(gamePlay.toString());
     }
 }

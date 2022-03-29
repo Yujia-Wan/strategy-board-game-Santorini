@@ -29,8 +29,6 @@ public abstract class GodCard {
         this.movedWorkerId = -1;
     }
 
-    public abstract String getPower();
-
     public Grid getGrid() {
         return this.grid;
     }
@@ -39,36 +37,36 @@ public abstract class GodCard {
         return this.player;
     }
 
-    public void setMyTurn(boolean value) {
-        this.myTurn = value;
-    }
-
     public boolean getMyTurn() {
         return this.myTurn;
-    }
-
-    public void setAction(String action) {
-        this.action = action;
     }
 
     public String getAction() {
         return this.action;
     }
 
-    public void setState(int state) {
-        this.state = state;
-    }
-
     public int getState() {
         return this.state;
     }
 
-    public void setMovedWorkerId(int id) {
-        this.movedWorkerId = id;
-    }
-
     public int getMovedWorkerId() {
         return this.movedWorkerId;
+    }
+
+    public void setMyTurn(boolean value) {
+        this.myTurn = value;
+    }
+
+    public void setAction(String action) {
+        this.action = action;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public void setMovedWorkerId(int id) {
+        this.movedWorkerId = id;
     }
 
     /**

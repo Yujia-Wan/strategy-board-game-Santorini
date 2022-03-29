@@ -1,9 +1,7 @@
 package edu.cmu.cs214.hw3;
 
 import java.awt.Point;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -48,7 +46,6 @@ public class GameState {
         int playerBCard = getPlayerBCard(game);
         Card[] cards = getCards(game);
         Player currPlayer = getCurrPlayer(game);
-        System.out.println("GameState: forgame: currPlayer: " + currPlayer.getPlayerId());
         int currWorker = getCurrWorker(game);
         boolean finishInitPos = getFinishInitPos(game);
         String action = getAction(game);
@@ -65,7 +62,7 @@ public class GameState {
                     "\"playerbcard\": " + this.playerBCard + "," +
                     "\"cards\": " + Arrays.toString(this.cards) + "," +
                     "\"currplayer\": \"" + this.currPlayer.getPlayerId() + "\"," +
-                    "\"currworker\": \"" + this.currWorker + "\"," +
+                    "\"currworker\": " + this.currWorker + "," +
                     "\"finishinitpos\": " + this.finishInitPos + "," +
                     "\"action\": \"" + this.action + "\"," +
                     "\"cells\": " + Arrays.toString(this.cells) + "}";
@@ -75,7 +72,7 @@ public class GameState {
                 "\"playerbcard\": " + this.playerBCard + "," +
                 "\"cards\": " + Arrays.toString(this.cards) + "," +
                 "\"currplayer\": \"" + this.currPlayer.getPlayerId() + "\"," +
-                "\"currworker\": \"" + this.currWorker + "\"," +
+                "\"currworker\": " + this.currWorker + "," +
                 "\"finishinitpos\": " + this.finishInitPos + "," +
                 "\"action\": \"" + this.action + "\"," +
                 "\"winner\": \"" + this.winner + "\"," +
@@ -159,7 +156,6 @@ public class GameState {
                     link = "";
                 } else {
                     if (grid.getFieldHeight(x, y) == EMPTY) {
-                        text = "";
                         clazz = "playable";
                     } else if (grid.getFieldHeight(x, y) == ONE_LEVEL) {
                         text = "[]";
@@ -191,12 +187,15 @@ public class GameState {
                     }
                     if (game.finishChooseGodCards() && game.allWorkersInited()) {
                         Player currPlayer = game.getCurrPlayer();
-                        Worker currWorker = game.getCurrWorker();
                         GodCard godCard = currPlayer.getGodCard();
+                        Worker currWorker = game.getCurrWorker();
                         Set<Point> validPos = godCard.getValidPositions(currWorker);
                         if (validPos.contains(new Point(x, y))) {
                             clazz = "valid";
                         }
+                    }
+                    if (game.getWinner() != null) {
+                        link = "";
                     }
                 }
                 cells[ROW * y + x] = new Cell(text, clazz, link);
