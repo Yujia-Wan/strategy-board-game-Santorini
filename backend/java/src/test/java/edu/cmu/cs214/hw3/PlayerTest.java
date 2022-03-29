@@ -8,12 +8,11 @@ import static org.junit.Assert.assertTrue;
 
 public class PlayerTest {
     private Player player;
-    private Grid grid;
 
     @Before
     public void setUp() {
-        this.grid = new Grid();
-        this.player = new Player(this.grid, "A");
+        Grid grid = new Grid();
+        this.player = new Player(grid, "A");
     }
 
     @Test

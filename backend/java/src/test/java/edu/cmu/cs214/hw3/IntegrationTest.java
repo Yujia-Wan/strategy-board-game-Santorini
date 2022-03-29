@@ -3,9 +3,7 @@ package edu.cmu.cs214.hw3;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class IntegrationTest {
     private Game game;
@@ -49,7 +47,7 @@ public class IntegrationTest {
         game.play(3,0);
         game.play(1,2);
         game.play(2,3);
-        assertEquals(null, game.getWinner());
+        assertNull(game.getWinner());
         game.play(3,2);
         assertEquals("A", game.getWinner().getPlayerId());
     }
@@ -80,7 +78,7 @@ public class IntegrationTest {
         assertEquals(2, game.getGrid().getFieldHeight(2,1));
         game.play(1,2);
         game.play(1,1);
-        assertEquals(null, game.getWinner());
+        assertNull(game.getWinner());
         game.play(1,1);
         assertEquals("A", game.getWinner().getPlayerId());
     }

@@ -1,5 +1,11 @@
 ## Extensibility
-This implement utilizes an abstract class to define basic game rules and sloves the extensibility issue through adding god card subclasses that extend the superclass. It is decoupled from the base game and new god cards can be easily added by creating a new subclass, which makes the game extensible. Decorator patten can be an alternative to add different features of god cards. In this way, each god card class has to implement all methods the interface defined, which increases code duplication and decreases coupling.
+This implement utilizes an abstract class to define basic game rules and sloves the extensibility issue through adding god card subclasses that extend the superclass. It is decoupled from the base game and new god cards can be easily added by creating a new subclass, which makes the game extensible. Decorator patten and observer pattern can be alternatives to add different features of god cards. In this way, each god card class has to implement all methods the interface defined, which increases code duplication and decreases coupling.
+
+### Design Principles
+Game is coupled with GodCard, Grid and Player. Worker can be decoupled from other classes because Player has all infomation about its workers. High cohsion is achieved and each class is responsible for assignments it has necessary information with. For example, Grid class is responsible for checking validity of field when executing move or build action as it konws all field's states. Also, the implementation has low represrntation gap, designed for understandability.
+
+### Tradeoffs
+Game class is a controller which has high coupling with GodCard, Grid and Player. And GodCard class is associated with Grid and Player. The template method pattern has high coupling and high cohesion. It is easy for reuse and reduces code duplication as well as decreases encapsulation.
 
 ![object model](object-model.png)
 

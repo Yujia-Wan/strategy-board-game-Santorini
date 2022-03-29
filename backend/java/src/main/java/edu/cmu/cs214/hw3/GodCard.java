@@ -125,6 +125,7 @@ public abstract class GodCard {
         for (Worker w: workers) {
             if (w.getHeight() == WIN_HEIGHT) {
                 this.state = WIN;
+                break;
             }
         }
     }
