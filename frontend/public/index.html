@@ -24,8 +24,12 @@
         </div>
       </div>
       <div id="workerbar">
-        <a href="/selectworker?i=0"><button>Worker 0</button></a>
-        <a href="/selectworker?i=1"><button>Worker 1</button></a>
+        <table>
+          <tr>
+            <a href="/selectworker?i=0"><button>Worker 0</button></a>
+            <a href="/selectworker?i=1"><button>Worker 1</button></a>
+          </tr>
+        </table>
       </div>
       <div id="board">
         {{#each cells}}
@@ -36,8 +40,19 @@
           {{/if}}
         {{/each}}
       </div>
-      <div id="playerbar">
-        {{playerbar}}
+      <!-- <div id="cardboard">
+        {{#each cards}}
+          {{#if link}}
+            <a href={{link}}><div class="card {{clazz}}">{{text}}</div></a>
+          {{else}}
+            <div class="card {{clazz}}">{{text}}</div>
+          {{/if}}
+        {{/each}}
+      </div> -->
+      <div id="playerbarrow">
+        <div id="playerbar">
+          {{playerbar}}
+        </div>
       </div>
       <div id="cardboard">
         {{#each cards}}

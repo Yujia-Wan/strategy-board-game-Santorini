@@ -14,7 +14,6 @@ public class GameState {
     private static final int TWO_LEVEL = 2;
     private static final int THREE_LEVEL = 3;
     private static final int DOME = 4;
-    private static final int CARD_NUMBER = 4;
     private final boolean finishChooseCard;
     private final int playerACard;
     private final int playerBCard;
@@ -106,9 +105,9 @@ public class GameState {
     }
 
     private static Card[] getCards(Game game) {
-        Card[] cards = new Card[CARD_NUMBER];
+        Card[] cards = new Card[Game.CARD_NUMBER];
         Map<Integer, String> cardPowerMap = game.getCardPowerMap();
-        for (int i = 0; i < CARD_NUMBER; i++) {
+        for (int i = 0; i < Game.CARD_NUMBER; i++) {
             String text = cardPowerMap.get(i);
             String clazz = "";
             String link = "";
@@ -197,7 +196,11 @@ public class GameState {
                         Worker currWorker = game.getCurrWorker();
                         Set<Point> validPos = godCard.getValidPositions(currWorker);
                         if (validPos.contains(new Point(x, y))) {
-                            clazz = "valid";
+                            if (currPlayer.getPlayerId().equals("A")) {
+                                clazz = "valida";
+                            } else if (currPlayer.getPlayerId().equals("B")) {
+                                clazz = "validb";
+                            }
                             link = "play?x=" + x + "&y=" + y;
                         }
                     }

@@ -140,4 +140,15 @@ public class Grid {
             this.occupied[x][y] = true;
         }
     }
+
+    /**
+     * Updates worker map after swapping two workers.
+     *
+     * @param myWorker Current player's worker.
+     * @param oppWorker Opponent player's worker.
+     */
+    public void updateGridAfterSwapTwoWorkers(Worker myWorker, Worker oppWorker) {
+        this.workerMap[myWorker.getX()][myWorker.getY()] = myWorker;
+        this.workerMap[oppWorker.getX()][oppWorker.getY()] = oppWorker;
+    }
 }
