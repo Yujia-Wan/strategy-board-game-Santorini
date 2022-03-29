@@ -22,9 +22,17 @@
                 <configuration>
                     <executable>java</executable>
                     <arguments>
+                        <argument>-Djava.library.path=target/lib</argument>
                         <argument>-classpath</argument>
                         <classpath/>
                         <argument>edu.cmu.cs214.hw3.App</argument>
+                        <argument>-d=testProject</argument>
+                        <argument>--size</argument>
+                        <argument>--list-articles</argument>
+                        <argument>--all</argument>
+                        <argument>--list-events</argument>
+                        <argument>--topics</argument>
+                        <argument>--clean</argument>
                     </arguments>
                 </configuration>
             </plugin>
@@ -98,7 +106,7 @@
         <dependency>
             <groupId>org.nanohttpd</groupId>
             <artifactId>nanohttpd</artifactId>
-            <version>2.3.0</version>
+            <version>2.3.1</version>
         </dependency>
         <dependency>
             <groupId>junit</groupId>
@@ -116,11 +124,6 @@
             <groupId>org.apache.maven.doxia</groupId>
             <artifactId>doxia-core</artifactId>
             <version>1.9.1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.nanohttpd</groupId>
-            <artifactId>nanohttpd</artifactId>
-            <version>2.3.1</version>
         </dependency>
     </dependencies>
 
