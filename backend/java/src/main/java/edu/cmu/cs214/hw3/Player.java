@@ -97,6 +97,11 @@ public class Player {
         }
     }
 
+    /**
+     * Retrieves all workers' positions.
+     *
+     * @return A set of coordinates.
+     */
     public Set<Point> getAllWorkersPositions() {
         Set<Point> positions = new HashSet<>();
         for (Worker worker: this.workerMap.values()) {
@@ -131,10 +136,20 @@ public class Player {
         return !allBuildable.isEmpty();
     }
 
+    /**
+     * Add the god card for player.
+     *
+     * @param godCard God card player chooses.
+     */
     public void setGodCard(GodCard godCard) {
         this.godCard = godCard;
     }
 
+    /**
+     * Retrieves the god card of player.
+     *
+     * @return Player's god card.
+     */
     public GodCard getGodCard() {
         return this.godCard;
     }

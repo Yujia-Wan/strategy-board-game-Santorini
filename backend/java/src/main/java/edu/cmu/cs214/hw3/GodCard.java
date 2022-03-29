@@ -185,6 +185,12 @@ public abstract class GodCard {
         return true;
     }
 
+    /**
+     * Retrieves all valid positions of the worker before action.
+     *
+     * @param worker The worker to take action.
+     * @return A set of field coordinates.
+     */
     public Set<Point> getValidPositions(Worker worker) {
         if (this.action.equals(MOVE)) {
             return this.grid.getMovablePositions(worker.getX(), worker.getY());

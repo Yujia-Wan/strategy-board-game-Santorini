@@ -40,6 +40,12 @@ public class GameState {
         this.cells = cells;
     }
 
+    /**
+     * Retrieves game state for current action.
+     *
+     * @param game Current game.
+     * @return Game state.
+     */
     public static GameState forGame(Game game) {
         boolean finishChooseCard = getFinishChooseCard(game);
         int playerACard = getPlayerACard(game);
@@ -79,11 +85,11 @@ public class GameState {
                 "\"cells\": " + Arrays.toString(this.cells) + "}";
     }
 
-    public static boolean getFinishChooseCard(Game game) {
+    private static boolean getFinishChooseCard(Game game) {
         return game.finishChooseGodCards();
     }
 
-    public static int getPlayerACard(Game game) {
+    private static int getPlayerACard(Game game) {
         Map<String, Integer> map = game.getPlayerIdCardIndexMap();
         if (map.containsKey("A")) {
             return map.get("A");
@@ -91,7 +97,7 @@ public class GameState {
         return -1;
     }
 
-    public static int getPlayerBCard(Game game) {
+    private static int getPlayerBCard(Game game) {
         Map<String, Integer> map = game.getPlayerIdCardIndexMap();
         if (map.containsKey("B")) {
             return map.get("B");
@@ -99,7 +105,7 @@ public class GameState {
         return -1;
     }
 
-    public static Card[] getCards(Game game) {
+    private static Card[] getCards(Game game) {
         Card[] cards = new Card[CARD_NUMBER];
         Map<Integer, String> cardPowerMap = game.getCardPowerMap();
         for (int i = 0; i < CARD_NUMBER; i++) {
@@ -117,33 +123,33 @@ public class GameState {
         return cards;
     }
 
-    public static Player getCurrPlayer(Game game) {
+    private static Player getCurrPlayer(Game game) {
         return game.getCurrPlayer();
     }
 
-    public static int getCurrWorker(Game game) {
+    private static int getCurrWorker(Game game) {
         return game.getCurrWorker().getWorkerId();
     }
 
-    public static boolean getFinishInitPos(Game game) {
+    private static boolean getFinishInitPos(Game game) {
         return game.allWorkersInited();
     }
 
-    public static String getAction(Game game) {
+    private static String getAction(Game game) {
         if (!game.finishChooseGodCards() || !game.allWorkersInited()) {
             return "";
         }
         return game.getCurrPlayer().getGodCard().getAction();
     }
 
-    public static String getWinner(Game game) {
+    private static String getWinner(Game game) {
         if (game.getWinner() == null) {
             return null;
         }
         return game.getWinner().getPlayerId();
     }
 
-    public static Cell[] getCells(Game game) {
+    private static Cell[] getCells(Game game) {
         Cell[] cells = new Cell[FIELD];
         Grid grid = game.getGrid();
         for (int x = 0; x < ROW; x++) {
