@@ -19,8 +19,6 @@ public class PlayerTest {
     @Test
     public void testInitWorkerPosition() {
         this.player.initWorkerPosition(0, 1, 2);
-        assertEquals(1, this.player.getWorker(0).getX());
-        assertEquals(2, this.player.getWorker(0).getY());
         assertTrue(this.player.getWorker(0).hasInitPosition());
     }
 
@@ -29,5 +27,12 @@ public class PlayerTest {
         this.player.initWorkerPosition(0, 1, 1);
         this.player.initWorkerPosition(1, 2, 2);
         assertTrue(this.player.allWorkersInited());
+    }
+
+    @Test
+    public void testGetAllWorkersPositions() {
+        this.player.initWorkerPosition(0, 1, 1);
+        this.player.initWorkerPosition(1, 2, 2);
+        assertEquals(2, this.player.getAllWorkersPositions().size());
     }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
 public class Game {
     public static final int NON_GOD = 0;
@@ -85,7 +86,7 @@ public class Game {
     /**
      * Changes current player.
      */
-    private void changePlayer() {
+    public void changePlayer() {
         if (this.currPlayer == this.playerA) {
             this.currPlayer = this.playerB;
             this.currWorker = this.currPlayer.getWorker(0);
@@ -111,7 +112,7 @@ public class Game {
      * @param player Player.
      * @param x God card's index.
      */
-    private void createCardForPlayer(Player player, int x) {
+    public void createCardForPlayer(Player player, int x) {
         GodCard card;
         switch (x) {
             case NON_GOD:
@@ -185,7 +186,7 @@ public class Game {
      * @param x Row index of starting position.
      * @param y Column index of starting position.
      */
-    private void initAllWorkersPositions(int workerId, int x, int y) {
+    public void initAllWorkersPositions(int workerId, int x, int y) {
         if (this.currPlayer.getWorker(workerId).hasInitPosition()) {
             System.err.println("Worker " + workerId + " for Player " + this.currPlayer.getPlayerId()
                     + " already has starting position!");

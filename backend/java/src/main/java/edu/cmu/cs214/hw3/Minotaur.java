@@ -27,7 +27,7 @@ public class Minotaur extends GodCard {
      * @param oppX X coordinate of opponent worker's target position.
      * @param oppY Y coordinate of opponent worker's target position.
      */
-    private void moveTwoWorkers(Worker myWorker, Worker oppWorker, int prevX, int prevY,
+    public void moveTwoWorkers(Worker myWorker, Worker oppWorker, int prevX, int prevY,
                                int dstX, int dstY, int oppX, int oppY) {
         oppWorker.setPositionAndHeight(oppX, oppY, this.getGrid().getFieldHeight(oppX, oppY));
         this.getGrid().updateGridAfterMove(oppWorker, dstX, dstY);
