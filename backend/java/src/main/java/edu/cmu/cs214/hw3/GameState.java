@@ -192,6 +192,7 @@ public class GameState {
                         Set<Point> validPos = godCard.getValidPositions(currWorker);
                         if (validPos.contains(new Point(x, y))) {
                             clazz = "valid";
+                            link = "play?x=" + x + "&y=" + y;
                         }
                     }
                     if (game.getWinner() != null) {

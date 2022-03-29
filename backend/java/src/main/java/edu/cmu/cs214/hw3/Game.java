@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 
 public class Game {
-    private static final int NON_GOD = 0;
-    private static final int DEMETER = 1;
-    private static final int MINOTAUR = 2;
-    private static final int PAN = 3;
-    private static final int CARD_NUMBER = 4;
-    private static final String[] POWERS = {"NonGod: Play without god card.",
-            "Demeter: Your worker may build one additional time, but not on the same space.",
+    public static final int NON_GOD = 0;
+    public static final int DEMETER = 1;
+    public static final int MINOTAUR = 2;
+    public static final int PAN = 3;
+    public static final int CARD_NUMBER = 4;
+    public static final String[] POWERS = {"NonGod: Play without god card.",
+            "Demeter: Your worker may build one additional time, but not on the same space. (Click " +
+                    "on the worker's current location to skip the optional second build.)",
             "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " +
                     "be forced one space straight backwards to an unoccupied space at any level.",
             "Pan: You also win if your Worker moves down two or more levels."};

@@ -5,8 +5,10 @@ import './App.css'
 var oldHref = "http://localhost:3000"
 var powers: String[];
 powers = ["NonGod: Play without god card.",
-          "Demeter: Your worker may build one additional time, but not on the same space.",
-          "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can be forced one space straight backwards to an unoccupied space at any level.",
+          "Demeter: Your worker may build one additional time, but not on the same space. (Click " +
+            "on the worker's current location to skip the optional second build.)",
+          "Minotaur: Your worker may move into an opponent Worker's space, if their Worker can " + 
+            "be forced one space straight backwards to an unoccupied space at any level.",
           "Pan: You also win if your Worker moves down two or more levels."]
 
 interface Cell {

@@ -85,7 +85,7 @@ public class Minotaur extends GodCard {
             }
         }
 
-        Set<Point> movablePos = this.getGrid().getMovablePositions(x, y);
+        Set<Point> movablePos = this.getGrid().getMovablePositions(prevX, prevY);
         if (movablePos.contains(target)) {
             moveWorker.setPositionAndHeight(x, y, this.getGrid().getFieldHeight(x, y));
             this.getGrid().updateGridAfterMove(worker, prevX, prevY);
@@ -94,5 +94,37 @@ public class Minotaur extends GodCard {
             System.err.println("Target field[" + x + "][" + y + "] is not movable.");
             return false;
         }
+    }
+
+    private Set<Point> getValidOppWorkerPos(Worker worker) {
+        int myWorkerX = worker.getX();
+        int myWorkerY = worker.getY();
+        Set<Point> allWorkersPos = this.getGrid().getAllWorkersPositions();
+        Set<Point> myWorkersPos = this.getPlayer().getAllWorkersPositions();
+        Set<Point> validOppWorkerPos = new HashSet<>();
+        for (Point p: allWorkersPos) {
+            if (!myWorkersPos.contains(p)) {
+                int oppTargetX = p.x + (myWorkerX < p.x? 1: -1);
+                int oppTargetY = p.y + (myWorkerY < p.y? 1: -1);
+                if ((myWorkerX == p.x || myWorkerY == p.y || Math.abs(myWorkerX - p.x) == Math.abs(myWorkerY - p.y))
+                        && 0 <= oppTargetX && oppTargetX < ROW && 0 <= oppTargetY && oppTargetY < COLUMN
+                        && !this.getGrid().isOccupied(oppTargetX, oppTargetY)) {
+                    validOppWorkerPos.add(p);
+                }
+            }
+        }
+        return validOppWorkerPos;
+    }
+
+    @Override
+    public Set<Point> getValidPositions(Worker worker) {
+        if (this.getAction().equals(MOVE)) {
+            Set<Point> moveValidPos = this.getGrid().getMovablePositions(worker.getX(), worker.getY());
+            moveValidPos.addAll(this.getValidOppWorkerPos(worker));
+            return moveValidPos;
+        } else if (this.getAction().equals((BUILD))) {
+            return this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
+        }
+        return null;
     }
 }

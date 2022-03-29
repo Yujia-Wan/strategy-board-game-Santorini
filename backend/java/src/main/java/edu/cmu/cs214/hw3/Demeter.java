@@ -9,7 +9,7 @@ import java.util.Set;
  * the player wants to skip the optional second build.
  */
 public class Demeter extends GodCard {
-    private static final String SECOND_BUILD = "second build";
+    public static final String SECOND_BUILD = "second build";
     private int firstBuildX;
     private int firstBuildY;
 
@@ -123,9 +123,10 @@ public class Demeter extends GodCard {
         } else if (this.getAction().equals((BUILD))) {
             return this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
         } else if (this.getAction().equals((SECOND_BUILD))) {
-            Set<Point> secondBuildablePos = this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
-            secondBuildablePos.remove(new Point(firstBuildX, firstBuildY));
-            return secondBuildablePos;
+            Set<Point> secondBuildValidPos = this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
+            secondBuildValidPos.remove(new Point(firstBuildX, firstBuildY));
+            secondBuildValidPos.add(new Point(worker.getX(), worker.getY()));
+            return secondBuildValidPos;
         }
         return null;
     }
