@@ -15,7 +15,9 @@ powers = ["NonGod: Play without god card.",
           "Artemis: Your Worker may move one additional time, but not back to its initial space. " +
             "(Click on the worker's current location to skip the optional second move.)",
           "Hephaestus: Your Worker may build one additional block (not dome) on top of your first " +
-            "block. (Click on the worker's current location to skip the optional second build.)"]
+            "block. (Click on the worker's current location to skip the optional second build.)",
+          "Atlas: Your Worker may build a dome at any level. (Click on the worker's current location " +
+            "to skip the optional second build.)"]
 
 interface Cell {
     text: String;
@@ -82,6 +84,7 @@ class App extends Component<Props, Cells> {
               { text: powers[4], clazz: "playable", link: "/choosegodcard?i=4" },
               { text: powers[5], clazz: "playable", link: "/choosegodcard?i=5" },
               { text: powers[6], clazz: "playable", link: "/choosegodcard?i=6" },
+              { text: powers[7], clazz: "playable", link: "/choosegodcard?i=6" },
           ]
       };
   }

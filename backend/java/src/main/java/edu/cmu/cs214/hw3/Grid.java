@@ -151,4 +151,15 @@ public class Grid {
         this.workerMap[myWorker.getX()][myWorker.getY()] = myWorker;
         this.workerMap[oppWorker.getX()][oppWorker.getY()] = oppWorker;
     }
+
+    /**
+     * Builds a dome at any level.
+     *
+     * @param x X coordinate of field.
+     * @param y Y coordinate of field.
+     */
+    public void buildDomeAtAnyLevel(int x, int y) {
+        this.height[x][y] += 1;
+        this.occupied[x][y] = true;
+    }
 }

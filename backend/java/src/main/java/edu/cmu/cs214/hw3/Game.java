@@ -13,7 +13,8 @@ public class Game {
     public static final int APOLLO = 4;
     public static final int ARTEMIS = 5;
     public static final int HEPHAESTUS = 6;
-    public static final int CARD_NUMBER = 7;
+    public static final int ATLAS = 7;
+    public static final int CARD_NUMBER = 8;
     public static final String[] POWERS = {"NonGod: Play without god card.",
             "Demeter: Your worker may build one additional time, but not on the same space. (Click " +
                     "on the worker's current location to skip the optional second build.)",
@@ -25,7 +26,9 @@ public class Game {
             "Artemis: Your Worker may move one additional time, but not back to its initial space. " +
                     "(Click on the worker's current location to skip the optional second move.)",
             "Hephaestus: Your Worker may build one additional block (not dome) on top of your first " +
-                    "block. (Click on the worker's current location to skip the optional second build.)"};
+                    "block. (Click on the worker's current location to skip the optional second build.)",
+            "Atlas: Your Worker may build a dome at any level. (Click on the worker's current location " +
+                    "to skip the optional second build.)"};
     private final Grid grid;
     private final Player playerA;
     private final Player playerB;
@@ -143,6 +146,9 @@ public class Game {
                 break;
             case HEPHAESTUS:
                 card = new Hephaestus(this.grid, player);
+                break;
+            case ATLAS:
+                card = new Atlas(this.grid, player);
                 break;
             default:
                 System.err.println("No this god card!");

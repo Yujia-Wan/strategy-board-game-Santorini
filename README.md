@@ -163,3 +163,5 @@ Apollo
 Artemis
 
 Hephaestus
+
+Atlas

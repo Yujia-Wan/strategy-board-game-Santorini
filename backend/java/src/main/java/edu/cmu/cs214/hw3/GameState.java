@@ -203,6 +203,21 @@ public class GameState {
                             }
                             link = "play?x=" + x + "&y=" + y;
                         }
+
+                        if (game.getChosenGodCards().contains(Game.ATLAS) &&
+                                grid.getFieldWorker(x, y) == null &&
+                                grid.isOccupied(x, y) &&
+                                grid.getFieldHeight(x, y) < Grid.DOME_HEIGHT) {
+                            if (grid.getFieldHeight(x, y) == ONE_LEVEL) {
+                                text = "O";
+                            } else if (grid.getFieldHeight(x, y) == TWO_LEVEL) {
+                                text = "[O]";
+                            } else if (grid.getFieldHeight(x, y) == THREE_LEVEL) {
+                                text = "[[O]]";
+                            }
+                            clazz = "occupied";
+                            link = "";
+                        }
                     }
                     if (game.getWinner() != null) {
                         link = "";
