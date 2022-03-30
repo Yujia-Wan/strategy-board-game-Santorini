@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class Grid {
-    private static final int ROW = 5;
-    private static final int COLUMN = 5;
-    private static final int DOME_HEIGHT = 4;
+    public static final int ROW = 5;
+    public static final int COLUMN = 5;
+    public static final int DOME_HEIGHT = 4;
     private static final int[] DELTA_X = new int[] {-1, 0, 1, -1, 1, -1, 0, 1};
     private static final int[] DELTA_Y = new int[] {-1, -1, -1, 0, 0, 1, 1, 1};
     private int[][] height;

@@ -1,51 +1,40 @@
 package edu.cmu.cs214.hw3;
 
 import java.awt.Point;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Demeter: Your worker may build one additional time, but not on the same space.
- * Create a "pass" button or click on the worker's current location, indicating that
- * the player wants to skip the optional second build.
+ * Hephaestus: Your Worker may build one additional block (not dome) on top of your first block.
+ * (Click on the worker's current location to skip the optional second build.)
  */
-public class Demeter extends GodCard {
-    public static final String SECOND_BUILD = "second build";
+public class Hephaestus extends GodCard {
+    private static final String BUILD_ADDL_BLOCK = "build one additional block";
     private int firstBuildX;
     private int firstBuildY;
 
-    public Demeter(Grid grid, Player player) {
+    public Hephaestus(Grid grid, Player player) {
         super(grid, player);
         this.firstBuildX = -1;
         this.firstBuildY = -1;
     }
 
     /**
-     * Builds one additional time.
+     * Builds one additional block (not dome) on top of the worker's first block.
      *
-     * @param worker Worker to build tower.
      * @param x X coordinate to build.
-     * @param y
+     * @param y Y coordinate to build.
      * @param firstBuildX X coordinate of first build.
      * @param firstBuildY Y coordinate of first build.
-     * @return {@code true} if second build succeeds.
+     * @return {@code true} if additional build succeeds.
      */
-    public boolean secondBuild(Worker worker, int x, int y,
-                               int firstBuildX, int firstBuildY) {
-        Worker buildWorker = this.getPlayer().getWorker(worker.getWorkerId());
-        int workerX = buildWorker.getX();
-        int workerY = buildWorker.getY();
-        Set<Point> buildablePos = this.getGrid().getBuildablePositions(workerX, workerY);
-        Point firstBuild = new Point(firstBuildX, firstBuildY);
-        // not on the same space
-        buildablePos.remove(firstBuild);
-        Point target = new Point(x, y);
-        if (buildablePos.contains(target)) {
-            this.getGrid().buildTowerLevel(x, y);
-            return true;
-        } else {
-            System.err.println("Target field[" + x + "][" + y + "] is not buildable.");
+    public boolean buildAddlBlock(int x, int y, int firstBuildX, int firstBuildY) {
+        if (x != firstBuildX || y != firstBuildY || this.getGrid().isOccupied(firstBuildX, firstBuildY) ||
+                (this.getGrid().getFieldHeight(firstBuildX, firstBuildY) >= Grid.DOME_HEIGHT - 1)) {
             return false;
         }
+        this.getGrid().buildTowerLevel(x, y);
+        return true;
     }
 
     @Override
@@ -56,10 +45,10 @@ public class Demeter extends GodCard {
                 this.setMyTurn(true);
             }
             case BUILD -> {
-                this.setAction(SECOND_BUILD);
+                this.setAction(BUILD_ADDL_BLOCK);
                 this.setMyTurn(true);
             }
-            case SECOND_BUILD -> {
+            case BUILD_ADDL_BLOCK -> {
                 this.setAction(MOVE);
                 this.setMyTurn(false);
             }
@@ -82,7 +71,7 @@ public class Demeter extends GodCard {
             }
 
             this.setMovedWorkerId(worker.getWorkerId());
-        } else if (this.getAction().equals(BUILD) || this.getAction().equals(SECOND_BUILD)) {
+        } else if (this.getAction().equals(BUILD) || this.getAction().equals(BUILD_ADDL_BLOCK)) {
             if (worker.getWorkerId() != this.getMovedWorkerId()) {
                 return false;
             }
@@ -100,10 +89,10 @@ public class Demeter extends GodCard {
 
                 this.firstBuildX = x;
                 this.firstBuildY = y;
-            } else if (this.getAction().equals(SECOND_BUILD)) {
+            } else if (this.getAction().equals(BUILD_ADDL_BLOCK)) {
                 // skip the optional second build by clicking on the worker's current location
                 if ((x != worker.getX() || y != worker.getY())
-                        && !this.secondBuild(worker, x, y, this.firstBuildX, this.firstBuildY)) {
+                        && !this.buildAddlBlock(x, y, this.firstBuildX, this.firstBuildY)) {
                     return false;
                 }
 
@@ -123,11 +112,15 @@ public class Demeter extends GodCard {
             return this.getGrid().getMovablePositions(worker.getX(), worker.getY());
         } else if (this.getAction().equals((BUILD))) {
             return this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
-        } else if (this.getAction().equals((SECOND_BUILD))) {
-            Set<Point> secondBuildValidPos = this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
-            secondBuildValidPos.remove(new Point(this.firstBuildX, this.firstBuildY));
-            secondBuildValidPos.add(new Point(worker.getX(), worker.getY()));
-            return secondBuildValidPos;
+        } else if (this.getAction().equals((BUILD_ADDL_BLOCK))) {
+            Set<Point> buildAddlBlockValidPos = new HashSet<>();
+            if (this.firstBuildX != -1 && this.firstBuildY!= -1 &&
+                    !this.getGrid().isOccupied(this.firstBuildX, this.firstBuildY) &&
+                    (this.getGrid().getFieldHeight(this.firstBuildX, this.firstBuildY) < Grid.DOME_HEIGHT - 1)) {
+                buildAddlBlockValidPos.add(new Point(this.firstBuildX, this.firstBuildY));
+            }
+            buildAddlBlockValidPos.add(new Point(worker.getX(), worker.getY()));
+            return buildAddlBlockValidPos;
         }
         return null;
     }

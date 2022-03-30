@@ -12,7 +12,8 @@ public class Game {
     public static final int PAN = 3;
     public static final int APOLLO = 4;
     public static final int ARTEMIS = 5;
-    public static final int CARD_NUMBER = 6;
+    public static final int HEPHAESTUS = 6;
+    public static final int CARD_NUMBER = 7;
     public static final String[] POWERS = {"NonGod: Play without god card.",
             "Demeter: Your worker may build one additional time, but not on the same space. (Click " +
                     "on the worker's current location to skip the optional second build.)",
@@ -22,7 +23,9 @@ public class Game {
             "Apollo: Your Worker may move into an opponent Worker's space by forcing their Worker " +
                     "to the space you just vacated.",
             "Artemis: Your Worker may move one additional time, but not back to its initial space. " +
-                    "(Click on the worker's current location to skip the optional second move.)"};
+                    "(Click on the worker's current location to skip the optional second move.)",
+            "Hephaestus: Your Worker may build one additional block (not dome) on top of your first " +
+                    "block. (Click on the worker's current location to skip the optional second build.)"};
     private final Grid grid;
     private final Player playerA;
     private final Player playerB;
@@ -137,6 +140,9 @@ public class Game {
                 break;
             case ARTEMIS:
                 card = new Artemis(this.grid, player);
+                break;
+            case HEPHAESTUS:
+                card = new Hephaestus(this.grid, player);
                 break;
             default:
                 System.err.println("No this god card!");
