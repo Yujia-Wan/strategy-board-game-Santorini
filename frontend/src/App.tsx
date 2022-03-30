@@ -11,7 +11,9 @@ powers = ["NonGod: Play without god card.",
             "be forced one space straight backwards to an unoccupied space at any level.",
           "Pan: You also win if your Worker moves down two or more levels.",
           "Apollo: Your Worker may move into an opponent Worker's space by forcing their Worker " +
-          "to the space you just vacated."]
+            "to the space you just vacated.",
+          "Artemis: Your Worker may move one additional time, but not back to its initial space. " +
+            "(Click on the worker's current location to skip the optional second move.)"]
 
 interface Cell {
     text: String;
@@ -76,6 +78,7 @@ class App extends Component<Props, Cells> {
               { text: powers[2], clazz: "playable", link: "/choosegodcard?i=2" },
               { text: powers[3], clazz: "playable", link: "/choosegodcard?i=3" },
               { text: powers[4], clazz: "playable", link: "/choosegodcard?i=4" },
+              { text: powers[5], clazz: "playable", link: "/choosegodcard?i=5" },
           ]
       };
   }

@@ -110,6 +110,8 @@ public class Demeter extends GodCard {
                 this.firstBuildX = -1;
                 this.firstBuildY = -1;
             }
+
+            this.setMovedWorkerId(-1);
         }
         checkWin();
         nextAction();
@@ -124,7 +126,7 @@ public class Demeter extends GodCard {
             return this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
         } else if (this.getAction().equals((SECOND_BUILD))) {
             Set<Point> secondBuildValidPos = this.getGrid().getBuildablePositions(worker.getX(), worker.getY());
-            secondBuildValidPos.remove(new Point(firstBuildX, firstBuildY));
+            secondBuildValidPos.remove(new Point(this.firstBuildX, this.firstBuildY));
             secondBuildValidPos.add(new Point(worker.getX(), worker.getY()));
             return secondBuildValidPos;
         }

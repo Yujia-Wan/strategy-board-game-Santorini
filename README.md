@@ -156,6 +156,8 @@ Demeter
 
 Minotaur
 
-Pab
+Pan
 
 Apollo
+
+Artemis

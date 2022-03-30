@@ -11,7 +11,8 @@ public class Game {
     public static final int MINOTAUR = 2;
     public static final int PAN = 3;
     public static final int APOLLO = 4;
-    public static final int CARD_NUMBER = 5;
+    public static final int ARTEMIS = 5;
+    public static final int CARD_NUMBER = 6;
     public static final String[] POWERS = {"NonGod: Play without god card.",
             "Demeter: Your worker may build one additional time, but not on the same space. (Click " +
                     "on the worker's current location to skip the optional second build.)",
@@ -19,7 +20,9 @@ public class Game {
                     "be forced one space straight backwards to an unoccupied space at any level.",
             "Pan: You also win if your Worker moves down two or more levels.",
             "Apollo: Your Worker may move into an opponent Worker's space by forcing their Worker " +
-                    "to the space you just vacated."};
+                    "to the space you just vacated.",
+            "Artemis: Your Worker may move one additional time, but not back to its initial space. " +
+                    "(Click on the worker's current location to skip the optional second move.)"};
     private final Grid grid;
     private final Player playerA;
     private final Player playerB;
@@ -131,6 +134,9 @@ public class Game {
                 break;
             case APOLLO:
                 card = new Apollo(this.grid, player);
+                break;
+            case ARTEMIS:
+                card = new Artemis(this.grid, player);
                 break;
             default:
                 System.err.println("No this god card!");
